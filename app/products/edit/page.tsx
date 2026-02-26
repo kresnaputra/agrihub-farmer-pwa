@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { useAuth } from '@/lib/context/AuthContext';
 import { ArrowLeft, Package, Loader2 } from 'lucide-react';
 
@@ -15,7 +16,7 @@ interface Product {
   description?: string;
 }
 
-export default function EditProductPage() {
+function EditProductForm() {
   const [product, setProduct] = useState<Product | null>(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -29,11 +30,16 @@ export default function EditProductPage() {
   
   const { supabase } = useAuth();
   const router = useRouter();
-  const params = useParams();
-  const productId = params.id as string;
+  const searchParams = useSearchParams();
+  const productId = searchParams.get('id');
 
   useEffect(() => {
-    fetchProduct();
+    if (productId) {
+      fetchProduct();
+    } else {
+      setError('ID produk tidak ditemukan');
+      setIsLoading(false);
+    }
   }, [productId]);
 
   const fetchProduct = async () => {
@@ -252,5 +258,17 @@ export default function EditProductPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function EditProductPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-green-50 flex items-center justify-center">
+        <Loader2 className="animate-spin text-green-600" size={48} />
+      </div>
+    }>
+      <EditProductForm />
+    </Suspense>
   );
 }

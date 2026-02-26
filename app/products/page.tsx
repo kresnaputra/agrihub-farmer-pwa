@@ -156,7 +156,7 @@ export default function ProductsPage() {
                 {/* Actions */}
                 <div className="flex flex-col gap-2">
                   <button
-                    onClick={() => router.push(`/products/edit/${product.id}`)}
+                    onClick={() => router.push(`/products/edit?id=${product.id}`)}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
                   >
                     <Edit size={20} />
