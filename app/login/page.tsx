@@ -22,12 +22,21 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
 
-    const success = await login(email, password);
+    const result = await login(email, password);
     setIsLoading(false);
 
-    if (success) {
+    if (result.success && result.user) {
+      // Check user role from profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', result.user.id)
+        .single();
+
       // Redirect based on role
-      if (role === 'farmer') {
+      if (profile?.role === 'admin') {
+        router.push('/admin');
+      } else if (role === 'farmer') {
         router.push('/dashboard');
       } else {
         router.push('/'); // Buyer goes to marketplace

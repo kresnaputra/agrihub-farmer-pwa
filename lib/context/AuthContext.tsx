@@ -14,7 +14,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<{ success: boolean; user?: any }>;
   register: (name: string, email: string, password: string, phone: string, role?: 'buyer' | 'farmer', village?: string, city?: string) => Promise<boolean>;
   logout: () => Promise<void>;
   supabase: SupabaseClient;
@@ -90,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (error || !data.user) {
         console.error('Error login:', error);
-        return false;
+        return { success: false };
       }
       
       // Get user profile
@@ -109,10 +109,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
       }
       
-      return true;
+      return { success: true, user: data.user };
     } catch (error) {
       console.error('Error:', error);
-      return false;
+      return { success: false };
     }
   };
 
