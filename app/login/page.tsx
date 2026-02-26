@@ -60,7 +60,7 @@ export default function LoginPage() {
           <span className="text-white text-2xl font-bold">A</span>
         </div>
         <h1 className="text-2xl font-bold text-black mb-2">AgriHub Petani</h1>
-        <p className="text-gray-700">Masuk untuk mengelola hasil panen</p>
+        <p className="text-black">Masuk untuk mengelola hasil panen</p>
       </div>
 
       {/* Form */}
@@ -72,7 +72,7 @@ export default function LoginPage() {
                 Nomor Telepon
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
                 <input
                   type="tel"
                   value={phone}
@@ -82,7 +82,7 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2">
+              <p className="text-xs text-black mt-2">
                 Kami akan mengirimkan kode OTP ke nomor ini
               </p>
             </div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
                 Kode OTP
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
                 <input
                   type="text"
                   value={otp}
@@ -126,7 +126,7 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2 text-center">
+              <p className="text-xs text-black mt-2 text-center">
                 Masukkan 6 digit kode yang dikirim ke {phone}
               </p>
             </div>
@@ -152,7 +152,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setStep('phone')}
-              className="w-full text-gray-700 py-2 text-sm hover:text-black"
+              className="w-full text-black py-2 text-sm hover:text-black"
             >
               Ganti nomor telepon
             </button>
@@ -160,7 +160,7 @@ export default function LoginPage() {
         )}
 
         <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-black">
             Belum punya akun?{' '}
             <a href="/register" className="text-green-600 font-medium hover:text-green-700">
               Daftar sekarang
@@ -170,7 +170,7 @@ export default function LoginPage() {
       </div>
 
       {/* Footer */}
-      <p className="text-center text-sm text-gray-600 mt-8">
+      <p className="text-center text-sm text-black mt-8">
         Dengan masuk, Anda menyetujui{' '}
         <a href="#" className="text-green-600">Syarat dan Ketentuan</a>
       </p>

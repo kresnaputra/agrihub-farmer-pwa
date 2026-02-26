@@ -86,9 +86,9 @@ export default function NotificationsPage() {
       case 'payment': return <DollarSign size={16} className="text-green-600" />;
       case 'product': return <Package size={16} className="text-purple-600" />;
       case 'price': return <TrendingUp size={16} className="text-yellow-600" />;
-      case 'system': return <AlertTriangle size={16} className="text-gray-600" />;
+      case 'system': return <AlertTriangle size={16} className="text-black" />;
       case 'message': return <MessageSquare size={16} className="text-pink-600" />;
-      default: return <Bell size={16} className="text-gray-600" />;
+      default: return <Bell size={16} className="text-black" />;
     }
   };
 
@@ -146,7 +146,7 @@ export default function NotificationsPage() {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-600">{notifications.length} notifikasi</p>
+              <p className="text-xs text-black">{notifications.length} notifikasi</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -190,15 +190,15 @@ export default function NotificationsPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-2 mb-6">
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-            <p className="text-sm text-gray-600">Total</p>
+            <p className="text-sm text-black">Total</p>
             <p className="font-bold text-lg">{notifications.length}</p>
           </div>
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-            <p className="text-sm text-gray-600">Belum Dibaca</p>
+            <p className="text-sm text-black">Belum Dibaca</p>
             <p className="font-bold text-lg text-blue-600">{unreadCount}</p>
           </div>
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
-            <p className="text-sm text-gray-600">Penting</p>
+            <p className="text-sm text-black">Penting</p>
             <p className="font-bold text-lg text-yellow-600">{importantCount}</p>
           </div>
         </div>
@@ -208,19 +208,19 @@ export default function NotificationsPage() {
           <div className="flex flex-wrap gap-2 mb-4">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}
             >
               Semua
             </button>
             <button
               onClick={() => setFilter('unread')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'unread' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'unread' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-black'}`}
             >
               Belum Dibaca
             </button>
             <button
               onClick={() => setFilter('important')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'important' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'important' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-black'}`}
             >
               Penting
             </button>
@@ -229,7 +229,7 @@ export default function NotificationsPage() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedType('all')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${selectedType === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${selectedType === 'all' ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}
             >
               Semua Tipe
             </button>
@@ -237,7 +237,7 @@ export default function NotificationsPage() {
               <button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium ${selectedType === type ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'} flex items-center gap-1`}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium ${selectedType === type ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'} flex items-center gap-1`}
               >
                 {getTypeIcon(type)}
                 {getTypeLabel(type)}
@@ -250,9 +250,9 @@ export default function NotificationsPage() {
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           {filteredNotifications.length === 0 ? (
             <div className="text-center py-12">
-              <Bell size={48} className="text-gray-300 mx-auto mb-4" />
-              <h3 className="font-medium text-gray-700 mb-2">Tidak ada notifikasi</h3>
-              <p className="text-gray-500 text-sm">Semua notifikasi sudah dibaca</p>
+              <Bell size={48} className="text-black mx-auto mb-4" />
+              <h3 className="font-medium text-black mb-2">Tidak ada notifikasi</h3>
+              <p className="text-black text-sm">Semua notifikasi sudah dibaca</p>
             </div>
           ) : (
             <div className="divide-y">
@@ -279,13 +279,13 @@ export default function NotificationsPage() {
                             <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <div className="flex items-center gap-1 text-xs text-black">
                           <Clock size={10} />
                           {notification.time}
                         </div>
                       </div>
                       
-                      <p className="text-sm text-gray-700 mb-3">{notification.message}</p>
+                      <p className="text-sm text-black mb-3">{notification.message}</p>
                       
                       <div className="flex justify-between items-center">
                         <div className="flex gap-2">
@@ -307,7 +307,7 @@ export default function NotificationsPage() {
                         
                         <button
                           onClick={() => deleteNotification(notification.id)}
-                          className="text-gray-400 hover:text-red-500"
+                          className="text-black hover:text-red-500"
                         >
                           <X size={14} />
                         </button>
@@ -341,7 +341,7 @@ export default function NotificationsPage() {
               <span className="text-sm">Harga</span>
             </div>
             <div className="flex items-center gap-2">
-              <AlertTriangle size={14} className="text-gray-600" />
+              <AlertTriangle size={14} className="text-black" />
               <span className="text-sm">Sistem</span>
             </div>
             <div className="flex items-center gap-2">

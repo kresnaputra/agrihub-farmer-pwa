@@ -131,7 +131,7 @@ export default function ProfilePage() {
               )}
             </div>
             <h2 className="text-xl font-bold text-black">{profile.name}</h2>
-            <p className="text-gray-600 flex items-center gap-1 mt-1">
+            <p className="text-black flex items-center gap-1 mt-1">
               <Phone size={14} />
               {profile.phone}
             </p>
@@ -152,43 +152,43 @@ export default function ProfilePage() {
           </h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+              <label className="block text-sm font-medium text-black mb-1">Nama Lengkap</label>
               <input
                 type="text"
                 value={profile.name}
                 onChange={(e) => setProfile({...profile, name: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-sm font-medium text-black mb-1">Email</label>
               <input
                 type="email"
                 value={profile.email}
                 onChange={(e) => setProfile({...profile, email: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
+              <label className="block text-sm font-medium text-black mb-1">Nomor Telepon</label>
               <input
                 type="tel"
                 value={profile.phone}
                 onChange={(e) => setProfile({...profile, phone: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Kode Pos</label>
+              <label className="block text-sm font-medium text-black mb-1">Kode Pos</label>
               <input
                 type="text"
                 value={profile.postalCode}
                 onChange={(e) => setProfile({...profile, postalCode: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
           </div>
@@ -202,43 +202,43 @@ export default function ProfilePage() {
           </h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Alamat Jalan</label>
+              <label className="block text-sm font-medium text-black mb-1">Alamat Jalan</label>
               <input
                 type="text"
                 value={profile.address}
                 onChange={(e) => setProfile({...profile, address: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
             <div className="grid md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Desa/Kelurahan</label>
+                <label className="block text-sm font-medium text-black mb-1">Desa/Kelurahan</label>
                 <input
                   type="text"
                   value={profile.village}
                   onChange={(e) => setProfile({...profile, village: e.target.value})}
                   disabled={!isEditing}
-                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Kota/Kabupaten</label>
+                <label className="block text-sm font-medium text-black mb-1">Kota/Kabupaten</label>
                 <input
                   type="text"
                   value={profile.city}
                   onChange={(e) => setProfile({...profile, city: e.target.value})}
                   disabled={!isEditing}
-                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Provinsi</label>
+                <label className="block text-sm font-medium text-black mb-1">Provinsi</label>
                 <select
                   value={profile.province}
                   onChange={(e) => setProfile({...profile, province: e.target.value})}
                   disabled={!isEditing}
-                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
                 >
                   <option value="Jawa Barat">Jawa Barat</option>
                   <option value="Jawa Tengah">Jawa Tengah</option>
@@ -257,17 +257,17 @@ export default function ProfilePage() {
             <Landmark size={18} />
             Rekening Bank
           </h3>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-black mb-4">
             Informasi rekening untuk pembayaran dari pembeli
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Bank</label>
+              <label className="block text-sm font-medium text-black mb-1">Nama Bank</label>
               <select
                 value={bankAccount.bankName}
                 onChange={(e) => setBankAccount({...bankAccount, bankName: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               >
                 <option value="BCA">BCA</option>
                 <option value="BRI">BRI</option>
@@ -278,23 +278,23 @@ export default function ProfilePage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Rekening</label>
+              <label className="block text-sm font-medium text-black mb-1">Nomor Rekening</label>
               <input
                 type="text"
                 value={bankAccount.accountNumber}
                 onChange={(e) => setBankAccount({...bankAccount, accountNumber: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Pemilik Rekening</label>
+              <label className="block text-sm font-medium text-black mb-1">Nama Pemilik Rekening</label>
               <input
                 type="text"
                 value={bankAccount.accountName}
                 onChange={(e) => setBankAccount({...bankAccount, accountName: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-gray-600"
+                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
               />
             </div>
           </div>
@@ -308,7 +308,7 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium">Ubah Kata Sandi</p>
-                  <p className="text-sm text-gray-600">Perbarui kata sandi Anda</p>
+                  <p className="text-sm text-black">Perbarui kata sandi Anda</p>
                 </div>
                 <ArrowLeft size={16} className="rotate-180" />
               </div>
@@ -317,7 +317,7 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium">Verifikasi Email</p>
-                  <p className="text-sm text-gray-600">Tambahkan email untuk verifikasi</p>
+                  <p className="text-sm text-black">Tambahkan email untuk verifikasi</p>
                 </div>
                 <ArrowLeft size={16} className="rotate-180" />
               </div>
@@ -326,7 +326,7 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-medium">Sesi Aktif</p>
-                  <p className="text-sm text-gray-600">Kelola perangkat yang terhubung</p>
+                  <p className="text-sm text-black">Kelola perangkat yang terhubung</p>
                 </div>
                 <ArrowLeft size={16} className="rotate-180" />
               </div>

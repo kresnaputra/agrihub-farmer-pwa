@@ -245,7 +245,7 @@ export default function FarmerDashboard() {
 
         {/* Quick Actions */}
         <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Aksi Cepat</h2>
+          <h2 className="text-lg font-semibold mb-4 text-black">Aksi Cepat</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {quickActions.map((action) => (
               <button
@@ -255,7 +255,7 @@ export default function FarmerDashboard() {
                 className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors"
               >
                 <action.icon size={24} className="text-green-600 mb-2" />
-                <span className="text-sm font-medium text-center">{action.label}</span>
+                <span className="text-sm font-medium text-center text-black">{action.label}</span>
               </button>
             ))}
           </div>
@@ -266,19 +266,19 @@ export default function FarmerDashboard() {
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 py-3 text-center font-medium ${activeTab === 'overview' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500 hover:text-black'}`}
+              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'overview' ? 'text-green-600 border-b-2 border-green-600' : ''}`}
             >
               Overview
             </button>
             <button
               onClick={() => setActiveTab('products')}
-              className={`flex-1 py-3 text-center font-medium ${activeTab === 'products' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500 hover:text-black'}`}
+              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'products' ? 'text-green-600 border-b-2 border-green-600' : ''}`}
             >
               Produk ({activeProducts})
             </button>
             <button
               onClick={() => setActiveTab('orders')}
-              className={`flex-1 py-3 text-center font-medium ${activeTab === 'orders' ? 'text-green-600 border-b-2 border-green-600' : 'text-gray-500 hover:text-black'}`}
+              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'orders' ? 'text-green-600 border-b-2 border-green-600' : ''}`}
             >
               Pesanan ({pendingOrders})
             </button>
@@ -438,7 +438,7 @@ export default function FarmerDashboard() {
                           <td className="p-3">
                             <div>
                               <h4 className="font-medium">{product.name}</h4>
-                              <p className="text-sm text-gray-600">{product.unit}</p>
+                              <p className="text-sm text-black">{product.unit}</p>
                             </div>
                           </td>
                           <td className="p-3">
@@ -448,7 +448,7 @@ export default function FarmerDashboard() {
                             <span className="font-medium">{product.stock}</span>
                           </td>
                           <td className="p-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}>
                               {product.status === 'active' ? 'Aktif' : 'Nonaktif'}
                             </span>
                           </td>
@@ -472,7 +472,7 @@ export default function FarmerDashboard() {
                 </div>
 
                 {products.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-black">
                     Belum ada produk. Tambahkan produk pertama Anda!
                   </div>
                 )}
@@ -483,7 +483,7 @@ export default function FarmerDashboard() {
               <div>
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">Daftar Pesanan</h2>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-black">
                     Total: {orders.length} pesanan
                   </div>
                 </div>
@@ -494,13 +494,13 @@ export default function FarmerDashboard() {
                       <div className="flex justify-between items-start mb-3">
                         <div>
                           <h3 className="font-medium">{order.product}</h3>
-                          <p className="text-sm text-gray-600">ID: {order.id} • Pembeli: {order.buyer}</p>
+                          <p className="text-sm text-black">ID: {order.id} • Pembeli: {order.buyer}</p>
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                           order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                           order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                           order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-800'
+                          'bg-gray-100 text-black'
                         }`}>
                           {order.status === 'pending' ? 'Menunggu' :
                            order.status === 'processing' ? 'Diproses' :
@@ -510,34 +510,34 @@ export default function FarmerDashboard() {
                       
                       <div className="grid md:grid-cols-3 gap-4 mb-3">
                         <div>
-                          <p className="text-sm text-gray-600">Jumlah</p>
+                          <p className="text-sm text-black">Jumlah</p>
                           <p className="font-medium">{order.qty} kg</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">Total</p>
+                          <p className="text-sm text-black">Total</p>
                           <p className="font-medium">Rp {order.total.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">Tanggal</p>
+                          <p className="text-sm text-black">Tanggal</p>
                           <p className="font-medium">{order.date}</p>
                         </div>
                       </div>
 
                       <div className="flex justify-between items-center">
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-black">
                           Update status:
                         </div>
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleUpdateOrderStatus(order.id, 'processing')}
-                            className={`px-3 py-1 rounded text-sm ${order.status === 'pending' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-gray-600'}`}
+                            className={`px-3 py-1 rounded text-sm ${order.status === 'pending' ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-200 text-black'}`}
                             disabled={order.status !== 'pending'}
                           >
                             Proses
                           </button>
                           <button
                             onClick={() => handleUpdateOrderStatus(order.id, 'completed')}
-                            className={`px-3 py-1 rounded text-sm ${order.status === 'processing' ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-200 text-gray-600'}`}
+                            className={`px-3 py-1 rounded text-sm ${order.status === 'processing' ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-200 text-black'}`}
                             disabled={order.status !== 'processing'}
                           >
                             Selesai
@@ -549,7 +549,7 @@ export default function FarmerDashboard() {
                 </div>
 
                 {orders.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-black">
                     Belum ada pesanan. Produk Anda akan muncul di marketplace!
                   </div>
                 )}

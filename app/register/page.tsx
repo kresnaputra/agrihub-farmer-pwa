@@ -65,7 +65,7 @@ export default function RegisterPage() {
           <span className="text-white text-2xl font-bold">A</span>
         </div>
         <h1 className="text-2xl font-bold text-black mb-2">Daftar sebagai Petani</h1>
-        <p className="text-gray-700">Bergabung dengan AgriHub sekarang</p>
+        <p className="text-black">Bergabung dengan AgriHub sekarang</p>
       </div>
 
       {/* Form */}
@@ -77,7 +77,7 @@ export default function RegisterPage() {
                 Nama Lengkap
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
                 <input
                   type="text"
                   value={name}
@@ -94,7 +94,7 @@ export default function RegisterPage() {
                 Nomor Telepon
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
                 <input
                   type="tel"
                   value={phone}
@@ -134,7 +134,7 @@ export default function RegisterPage() {
                 Kode OTP
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
                 <input
                   type="text"
                   value={otp}
@@ -145,7 +145,7 @@ export default function RegisterPage() {
                   required
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2 text-center">
+              <p className="text-xs text-black mt-2 text-center">
                 Masukkan 6 digit kode yang dikirim ke {phone}
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={() => setStep('form')}
-              className="w-full text-gray-700 py-2 text-sm hover:text-black"
+              className="w-full text-black py-2 text-sm hover:text-black"
             >
               Ganti nomor telepon
             </button>
@@ -179,7 +179,7 @@ export default function RegisterPage() {
         )}
 
         <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-black">
             Sudah punya akun?{' '}
             <a href="/login" className="text-green-600 font-medium hover:text-green-700">
               Masuk
@@ -192,7 +192,7 @@ export default function RegisterPage() {
       <div className="mt-8 max-w-sm mx-auto">
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <h3 className="font-medium text-black mb-2">Keuntungan bergabung:</h3>
-          <ul className="text-sm text-gray-700 space-y-1">
+          <ul className="text-sm text-black space-y-1">
             <li>• Akses ke ribuan pembeli</li>
             <li>• Harga pasar real-time</li>
             <li>• Pembayaran aman & cepat</li>

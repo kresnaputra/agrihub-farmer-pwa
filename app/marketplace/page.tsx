@@ -102,7 +102,7 @@ export default function MarketplacePage() {
             </button>
             <div>
               <h1 className="font-semibold text-black">Harga Pasar</h1>
-              <p className="text-xs text-gray-600">Update real-time</p>
+              <p className="text-xs text-black">Update real-time</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function MarketplacePage() {
         {/* Search & Filters */}
         <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={18} />
             <input
               type="text"
               value={searchQuery}
@@ -162,20 +162,20 @@ export default function MarketplacePage() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}
             >
               Semua
             </button>
             <button
               onClick={() => setFilter('rising')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'rising' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'rising' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}
             >
               <TrendingUp size={12} className="inline mr-1" />
               Naik
             </button>
             <button
               onClick={() => setFilter('falling')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'falling' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-700'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'falling' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-black'}`}
             >
               <TrendingDown size={12} className="inline mr-1" />
               Turun
@@ -219,25 +219,25 @@ export default function MarketplacePage() {
                         </button>
                         <div>
                           <h4 className="font-medium">{commodity.name}</h4>
-                          <p className="text-xs text-gray-600">{commodity.unit}</p>
+                          <p className="text-xs text-black">{commodity.unit}</p>
                         </div>
                       </div>
                     </td>
                     <td className="p-3">
                       <div className="font-bold">Rp {commodity.currentPrice.toLocaleString()}</div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-xs text-black">
                         {commodity.low.toLocaleString()} - {commodity.high.toLocaleString()}
                       </div>
                     </td>
                     <td className="p-3">
-                      <div className={`flex items-center gap-1 font-medium ${commodity.change > 0 ? 'text-green-600' : commodity.change < 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                      <div className={`flex items-center gap-1 font-medium ${commodity.change > 0 ? 'text-green-600' : commodity.change < 0 ? 'text-red-600' : 'text-black'}`}>
                         {commodity.change > 0 ? <TrendingUp size={12} /> : 
                          commodity.change < 0 ? <TrendingDown size={12} /> : 
                          <Minus size={12} />}
                         <span>Rp {Math.abs(commodity.change).toLocaleString()}</span>
                         <span>({commodity.changePercent > 0 ? '+' : ''}{commodity.changePercent}%)</span>
                       </div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-xs text-black">
                         {commodity.lastUpdated}
                       </div>
                     </td>
@@ -252,7 +252,7 @@ export default function MarketplacePage() {
                         >
                           Detail
                         </button>
-                        <button className="text-gray-600 hover:text-black text-sm">
+                        <button className="text-black hover:text-black text-sm">
                           <Share2 size={14} />
                         </button>
                       </div>
@@ -264,7 +264,7 @@ export default function MarketplacePage() {
           </div>
 
           {filteredCommodities.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-black">
               Tidak ditemukan komoditas yang sesuai
             </div>
           )}
@@ -278,7 +278,7 @@ export default function MarketplacePage() {
                 <h3 className="font-bold text-lg">{selectedCommodity.name}</h3>
                 <button
                   onClick={() => setSelectedCommodity(null)}
-                  className="text-gray-500 hover:text-black"
+                  className="text-black hover:text-black"
                 >
                   ✕
                 </button>
@@ -286,41 +286,41 @@ export default function MarketplacePage() {
               
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-600">Harga Saat Ini</p>
+                  <p className="text-sm text-black">Harga Saat Ini</p>
                   <p className="font-bold text-2xl">Rp {selectedCommodity.currentPrice.toLocaleString()}/{selectedCommodity.unit}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Perubahan</p>
+                    <p className="text-sm text-black">Perubahan</p>
                     <p className={`font-medium ${selectedCommodity.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {selectedCommodity.change > 0 ? '+' : ''}Rp {Math.abs(selectedCommodity.change).toLocaleString()} ({selectedCommodity.changePercent}%)
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Volume</p>
+                    <p className="text-sm text-black">Volume</p>
                     <p className="font-medium">{selectedCommodity.volume.toLocaleString()} {selectedCommodity.unit}</p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-600">Tertinggi</p>
+                    <p className="text-sm text-black">Tertinggi</p>
                     <p className="font-medium">Rp {selectedCommodity.high.toLocaleString()}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Terendah</p>
+                    <p className="text-sm text-black">Terendah</p>
                     <p className="font-medium">Rp {selectedCommodity.low.toLocaleString()}</p>
                   </div>
                 </div>
                 
                 <div>
-                  <p className="text-sm text-gray-600">Pasar</p>
+                  <p className="text-sm text-black">Pasar</p>
                   <p className="font-medium">{selectedCommodity.market}</p>
                 </div>
                 
                 <div>
-                  <p className="text-sm text-gray-600">Update Terakhir</p>
+                  <p className="text-sm text-black">Update Terakhir</p>
                   <p className="font-medium">{selectedCommodity.lastUpdated}</p>
                 </div>
               </div>
