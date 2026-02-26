@@ -6,17 +6,15 @@ import { supabase } from '@/lib/supabase/client';
 interface User {
   id: string;
   name: string;
+  email: string;
   phone: string;
-  email?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (phone: string, otp: string) => Promise<boolean>;
-  register: (name: string, phone: string, otp: string) => Promise<boolean>;
-  sendOTP: (phone: string) => Promise<boolean>;
-  requestOTP: (phone: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, phone: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -43,8 +41,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser({
             id: session.user.id,
             name: profile.name,
-            phone: profile.phone,
             email: profile.email,
+            phone: profile.phone,
           });
         }
       }
@@ -68,8 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser({
               id: session.user.id,
               name: profile.name,
-              phone: profile.phone,
               email: profile.email,
+              phone: profile.phone,
             });
           }
         } else if (event === 'SIGNED_OUT') {
@@ -81,91 +79,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const sendOTP = async (phone: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Call Edge Function to send WhatsApp OTP
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/send-whatsapp-otp`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ phone }),
-        }
-      );
-      
-      const result = await response.json();
-      
-      if (!response.ok) {
-        console.error('Edge Function error:', result);
+      if (error || !data.user) {
+        console.error('Error login:', error);
         return false;
       }
       
-      return true;
-    } catch (error) {
-      console.error('Error:', error);
-      return false;
-    }
-  };
-
-  const verifyOTP = async (phone: string, otp: string): Promise<{ success: boolean; userId?: string }> => {
-    try {
-      // Check OTP in database
-      const { data, error } = await supabase
-        .from('otp_codes')
-        .select('*')
-        .eq('phone', phone)
-        .eq('otp', otp)
-        .eq('used', false)
-        .gt('expires_at', new Date().toISOString())
-        .single();
-      
-      if (error || !data) {
-        console.error('Invalid or expired OTP:', error);
-        return { success: false };
-      }
-      
-      // Mark OTP as used
-      await supabase
-        .from('otp_codes')
-        .update({ used: true })
-        .eq('id', data.id);
-      
-      return { success: true };
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-      return { success: false };
-    }
-  };
-
-  const login = async (phone: string, otp: string): Promise<boolean> => {
-    try {
-      // Verify OTP from Edge Function
-      const { success } = await verifyOTP(phone, otp);
-      
-      if (!success) {
-        console.error('Invalid OTP');
-        return false;
-      }
-      
-      // Check if user exists
+      // Get user profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('phone', phone)
+        .eq('id', data.user.id)
         .single();
       
       if (profile) {
         setUser({
-          id: profile.id,
+          id: data.user.id,
           name: profile.name,
-          phone: profile.phone,
           email: profile.email,
+          phone: profile.phone,
         });
       }
       
@@ -176,28 +114,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (name: string, phone: string, otp: string): Promise<boolean> => {
+  const register = async (name: string, email: string, password: string, phone: string): Promise<boolean> => {
     try {
-      // First verify OTP
-      const { success } = await verifyOTP(phone, otp);
+      // Create auth user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
       
-      if (!success) {
-        console.error('Invalid OTP');
+      if (error || !data.user) {
+        console.error('Error registering:', error);
         return false;
       }
-      
-      // Generate user ID
-      const userId = crypto.randomUUID();
       
       // Create profile
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([
           {
-            id: userId,
+            id: data.user.id,
             name,
+            email,
             phone,
-            email: `${phone}@agrihub.id`,
           },
         ]);
       
@@ -207,10 +145,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       setUser({
-        id: userId,
+        id: data.user.id,
         name,
+        email,
         phone,
-        email: `${phone}@agrihub.id`,
       });
       
       return true;
@@ -232,8 +170,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         register,
-        sendOTP,
-        requestOTP: sendOTP, // Alias for backward compatibility
         logout,
       }}
     >

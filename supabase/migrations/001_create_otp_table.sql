@@ -1,4 +1,4 @@
--- Create table to store OTP codes
+-- Create table to store OTP codes (not used for email auth, but kept for future)
 CREATE TABLE IF NOT EXISTS otp_codes (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   phone TEXT NOT NULL,
@@ -7,18 +7,14 @@ CREATE TABLE IF NOT EXISTS otp_codes (
   used BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
   
-  -- Index for faster lookup
   CONSTRAINT unique_phone_otp UNIQUE (phone, otp)
 );
 
 -- Enable RLS
 ALTER TABLE otp_codes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role only" ON otp_codes FOR ALL USING (false);
 
--- Only service role can access (for security)
-CREATE POLICY "Service role only" ON otp_codes
-  FOR ALL USING (false);
-
--- Auto cleanup expired OTPs (optional)
+-- Auto cleanup expired OTPs
 CREATE OR REPLACE FUNCTION cleanup_expired_otp()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -27,5 +23,5 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Run cleanup every hour (optional, requires pg_cron extension)
--- SELECT cron.schedule('cleanup-otp', '0 * * * *', 'DELETE FROM otp_codes WHERE expires_at < NOW()');
+-- Note: For Email Auth, we don't need OTP table
+-- This is kept for backward compatibility if we want to add phone OTP later

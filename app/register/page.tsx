@@ -3,57 +3,37 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
-import { Phone, User, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, Phone, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'form' | 'otp'>('form');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { register, requestOTP } = useAuth();
+  const { register } = useAuth();
   const router = useRouter();
-
-  const handleRequestOTP = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    
-    if (name.length < 3) {
-      setError('Nama minimal 3 karakter');
-      return;
-    }
-    
-    if (phone.length < 10) {
-      setError('Nomor telepon tidak valid');
-      return;
-    }
-
-    setIsLoading(true);
-    const success = await requestOTP(phone);
-    setIsLoading(false);
-
-    if (success) {
-      setStep('otp');
-      alert('Kode verifikasi dikirim ke WhatsApp! Cek pesan masuk.');
-    } else {
-      setError('Gagal mengirim OTP');
-    }
-  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    const success = await register(name, phone, otp);
+    if (password.length < 6) {
+      setError('Password minimal 6 karakter');
+      setIsLoading(false);
+      return;
+    }
+
+    const success = await register(name, email, password, phone);
     setIsLoading(false);
 
     if (success) {
       router.push('/');
     } else {
-      setError('Registrasi gagal');
+      setError('Gagal mendaftar. Email mungkin sudah terdaftar.');
     }
   };
 
@@ -70,134 +50,108 @@ export default function RegisterPage() {
 
       {/* Form */}
       <div className="bg-white rounded-xl shadow-sm p-6 max-w-sm mx-auto w-full">
-        {step === 'form' ? (
-          <form onSubmit={handleRequestOTP} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-black mb-2">
-                Nama Lengkap
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Nama Anda"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
-                  required
-                />
-              </div>
+        <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">
+              Nama Lengkap
+            </label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nama Anda"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                required
+              />
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-black mb-2">
-                Nomor Telepon
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="08xxxxxxxxxx"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
-                  required
-                />
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">
+              Email
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="nama@email.com"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                required
+              />
             </div>
+          </div>
 
-            {error && (
-              <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
-                {error}
-              </div>
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Minimal 6 karakter"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                required
+                minLength={6}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">
+              Nomor Telepon
+            </label>
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="08xxxxxxxxxx"
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                required
+              />
+            </div>
+            <p className="text-xs text-black mt-1">
+              Nomor digunakan untuk komunikasi dengan pembeli
+            </p>
+          </div>
+
+          {error && (
+            <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-green-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-green-700 disabled:opacity-50"
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <>
+                Daftar
+                <ArrowRight size={20} />
+              </>
             )}
+          </button>
+        </form>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-green-700 disabled:opacity-50"
-            >
-              {isLoading ? (
-                <Loader2 size={20} className="animate-spin" />
-              ) : (
-                <>
-                  Lanjutkan
-                  <ArrowRight size={20} />
-                </>
-              )}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-black mb-2">
-                Kode Verifikasi WhatsApp
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="123456"
-                  maxLength={6}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black text-center tracking-widest"
-                  required
-                />
-              </div>
-              <p className="text-xs text-black mt-2 text-center">
-                Cek WhatsApp Anda di nomor {phone}
-              </p>
-            </div>
-
-            {error && (
-              <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-green-700 disabled:opacity-50"
-            >
-              {isLoading ? (
-                <Loader2 size={20} className="animate-spin" />
-              ) : (
-                'Daftar'
-              )}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setStep('form')}
-              className="w-full text-black py-2 text-sm hover:text-black"
-            >
-              Ganti nomor telepon
-            </button>
-          </form>
-        )}
-
-        <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-          <p className="text-sm text-black">
+        <div className="mt-6 text-center">
+          <p className="text-black text-sm">
             Sudah punya akun?{' '}
-            <a href="/login" className="text-black font-medium hover:text-green-700">
+            <a href="/login" className="text-green-600 font-medium hover:underline">
               Masuk
             </a>
           </p>
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="mt-8 max-w-sm mx-auto">
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h3 className="font-medium text-black mb-2">Keuntungan bergabung:</h3>
-          <ul className="text-sm text-black space-y-1">
-            <li>• Akses ke ribuan pembeli</li>
-            <li>• Harga pasar real-time</li>
-            <li>• Pembayaran aman & cepat</li>
-            <li>• Gratis biaya pendaftaran</li>
-          </ul>
         </div>
       </div>
     </div>
