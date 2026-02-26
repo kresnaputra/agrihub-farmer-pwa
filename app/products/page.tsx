@@ -19,16 +19,26 @@ interface Product {
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const { supabase, user } = useAuth();
+  const { supabase, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (!authLoading) {
+      if (!user) {
+        router.push('/login');
+        return;
+      }
+      fetchProducts();
+    }
+  }, [authLoading, user]);
 
   const fetchProducts = async () => {
     try {
+      setIsLoading(true);
+      setError('');
+      
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -37,8 +47,9 @@ export default function ProductsPage() {
 
       if (error) throw error;
       setProducts(data || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    } catch (err: any) {
+      console.error('Error fetching products:', err);
+      setError('Gagal memuat produk. Silakan coba lagi.');
     } finally {
       setIsLoading(false);
     }
@@ -65,10 +76,11 @@ export default function ProductsPage() {
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
-      <div className="min-h-screen bg-green-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <div className="min-h-screen bg-green-50 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
+        <p className="text-black">Memuat produk...</p>
       </div>
     );
   }
@@ -106,6 +118,18 @@ export default function ProductsPage() {
 
       {/* Product List */}
       <div className="p-4">
+        {error && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-700 text-center">{error}</p>
+            <button
+              onClick={fetchProducts}
+              className="mt-2 w-full py-2 bg-red-600 text-white rounded-lg text-sm"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        )}
+        
         {filteredProducts.length === 0 ? (
           <div className="text-center py-12">
             <Package className="mx-auto text-gray-300 mb-4" size={64} />
