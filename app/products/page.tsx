@@ -99,7 +99,7 @@ export default function ProductsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari produk..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-white text-black placeholder:text-gray-400"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-white text-black placeholder:text-white/70"
           />
         </div>
       </div>
