@@ -219,7 +219,7 @@ export default function FarmerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-black">{stat.label}</p>
-                  <p className="text-2xl font-bold mt-1">{stat.value}</p>
+                  <p className="text-2xl font-bold mt-1 text-black">{stat.value}</p>
                 </div>
                 <div className={`${stat.color} p-3 rounded-full`}>
                   <stat.icon size={20} className="text-white" />
