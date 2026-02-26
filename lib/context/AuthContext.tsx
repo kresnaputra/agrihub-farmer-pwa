@@ -16,7 +16,7 @@ interface AuthContextType {
   login: (phone: string, otp: string) => Promise<boolean>;
   register: (name: string, phone: string, otp: string) => Promise<boolean>;
   sendOTP: (phone: string) => Promise<boolean>;
-  requestOTP: (phone: string) => Promise<boolean>; // Alias for backward compatibility
+  requestOTP: (phone: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -83,15 +83,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const sendOTP = async (phone: string): Promise<boolean> => {
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        phone,
-        options: {
-          channel: 'whatsapp',
-        }
-      });
+      // Call Edge Function to send WhatsApp OTP
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
       
-      if (error) {
-        console.error('Error sending OTP:', error);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/send-whatsapp-otp`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ phone }),
+        }
+      );
+      
+      const result = await response.json();
+      
+      if (!response.ok) {
+        console.error('Edge Function error:', result);
         return false;
       }
       
@@ -102,29 +113,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const verifyOTP = async (phone: string, otp: string): Promise<{ success: boolean; userId?: string }> => {
+    try {
+      // Check OTP in database
+      const { data, error } = await supabase
+        .from('otp_codes')
+        .select('*')
+        .eq('phone', phone)
+        .eq('otp', otp)
+        .eq('used', false)
+        .gt('expires_at', new Date().toISOString())
+        .single();
+      
+      if (error || !data) {
+        console.error('Invalid or expired OTP:', error);
+        return { success: false };
+      }
+      
+      // Mark OTP as used
+      await supabase
+        .from('otp_codes')
+        .update({ used: true })
+        .eq('id', data.id);
+      
+      return { success: true };
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      return { success: false };
+    }
+  };
+
   const login = async (phone: string, otp: string): Promise<boolean> => {
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone,
-        token: otp,
-        type: 'sms',
-      });
+      // Verify OTP from Edge Function
+      const { success } = await verifyOTP(phone, otp);
       
-      if (error || !data.user) {
-        console.error('Error verifying OTP:', error);
+      if (!success) {
+        console.error('Invalid OTP');
         return false;
       }
       
-      // Get user profile
+      // Check if user exists
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', data.user.id)
+        .eq('phone', phone)
         .single();
       
       if (profile) {
         setUser({
-          id: data.user.id,
+          id: profile.id,
           name: profile.name,
           phone: profile.phone,
           email: profile.email,
@@ -141,23 +179,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, phone: string, otp: string): Promise<boolean> => {
     try {
       // First verify OTP
-      const { data, error } = await supabase.auth.verifyOtp({
-        phone,
-        token: otp,
-        type: 'sms',
-      });
+      const { success } = await verifyOTP(phone, otp);
       
-      if (error || !data.user) {
-        console.error('Error verifying OTP:', error);
+      if (!success) {
+        console.error('Invalid OTP');
         return false;
       }
+      
+      // Generate user ID
+      const userId = crypto.randomUUID();
       
       // Create profile
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([
           {
-            id: data.user.id,
+            id: userId,
             name,
             phone,
             email: `${phone}@agrihub.id`,
@@ -170,7 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       
       setUser({
-        id: data.user.id,
+        id: userId,
         name,
         phone,
         email: `${phone}@agrihub.id`,
