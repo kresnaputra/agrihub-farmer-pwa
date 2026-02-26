@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Use Edge Function to create user (bypasses email confirmation)
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/register-user`,
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/smooth-worker`,
         {
           method: 'POST',
           headers: {
