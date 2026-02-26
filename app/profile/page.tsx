@@ -146,7 +146,7 @@ export default function ProfilePage() {
 
         {/* Personal Information */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold mb-4 text-black flex items-center gap-2">
             <User size={18} />
             Informasi Pribadi
           </h3>
@@ -158,7 +158,7 @@ export default function ProfilePage() {
                 value={profile.name}
                 onChange={(e) => setProfile({...profile, name: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
             <div>
@@ -168,7 +168,7 @@ export default function ProfilePage() {
                 value={profile.email}
                 onChange={(e) => setProfile({...profile, email: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
             <div>
@@ -178,7 +178,7 @@ export default function ProfilePage() {
                 value={profile.phone}
                 onChange={(e) => setProfile({...profile, phone: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
             <div>
@@ -188,7 +188,7 @@ export default function ProfilePage() {
                 value={profile.postalCode}
                 onChange={(e) => setProfile({...profile, postalCode: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function ProfilePage() {
 
         {/* Address Information */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold mb-4 text-black flex items-center gap-2">
             <Home size={18} />
             Alamat Lengkap
           </h3>
@@ -208,7 +208,7 @@ export default function ProfilePage() {
                 value={profile.address}
                 onChange={(e) => setProfile({...profile, address: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
             <div className="grid md:grid-cols-3 gap-4">
@@ -219,7 +219,7 @@ export default function ProfilePage() {
                   value={profile.village}
                   onChange={(e) => setProfile({...profile, village: e.target.value})}
                   disabled={!isEditing}
-                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                  className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
                 />
               </div>
               <div>
@@ -229,7 +229,7 @@ export default function ProfilePage() {
                   value={profile.city}
                   onChange={(e) => setProfile({...profile, city: e.target.value})}
                   disabled={!isEditing}
-                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                  className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
                 />
               </div>
               <div>
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                   value={profile.province}
                   onChange={(e) => setProfile({...profile, province: e.target.value})}
                   disabled={!isEditing}
-                  className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                  className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
                 >
                   <option value="Jawa Barat">Jawa Barat</option>
                   <option value="Jawa Tengah">Jawa Tengah</option>
@@ -253,7 +253,7 @@ export default function ProfilePage() {
 
         {/* Bank Account */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold mb-4 text-black flex items-center gap-2">
             <Landmark size={18} />
             Rekening Bank
           </h3>
@@ -267,7 +267,7 @@ export default function ProfilePage() {
                 value={bankAccount.bankName}
                 onChange={(e) => setBankAccount({...bankAccount, bankName: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               >
                 <option value="BCA">BCA</option>
                 <option value="BRI">BRI</option>
@@ -284,7 +284,7 @@ export default function ProfilePage() {
                 value={bankAccount.accountNumber}
                 onChange={(e) => setBankAccount({...bankAccount, accountNumber: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
             <div className="md:col-span-2">
@@ -294,7 +294,7 @@ export default function ProfilePage() {
                 value={bankAccount.accountName}
                 onChange={(e) => setBankAccount({...bankAccount, accountName: e.target.value})}
                 disabled={!isEditing}
-                className="w-full p-3 border border-gray-300 rounded-lg disabled:bg-gray-100 disabled:text-black"
+                className="w-full p-3 border border-gray-300 rounded-lg text-black disabled:bg-gray-100 disabled:text-black placeholder:text-black"
               />
             </div>
           </div>
@@ -302,12 +302,12 @@ export default function ProfilePage() {
 
         {/* Account Security */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-semibold mb-4">Keamanan Akun</h3>
+          <h3 className="text-lg font-semibold mb-4 text-black">Keamanan Akun</h3>
           <div className="space-y-3">
             <button className="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">Ubah Kata Sandi</p>
+                  <p className="font-medium text-black">Ubah Kata Sandi</p>
                   <p className="text-sm text-black">Perbarui kata sandi Anda</p>
                 </div>
                 <ArrowLeft size={16} className="rotate-180" />
@@ -316,7 +316,7 @@ export default function ProfilePage() {
             <button className="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">Verifikasi Email</p>
+                  <p className="font-medium text-black">Verifikasi Email</p>
                   <p className="text-sm text-black">Tambahkan email untuk verifikasi</p>
                 </div>
                 <ArrowLeft size={16} className="rotate-180" />
@@ -325,7 +325,7 @@ export default function ProfilePage() {
             <button className="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">Sesi Aktif</p>
+                  <p className="font-medium text-black">Sesi Aktif</p>
                   <p className="text-sm text-black">Kelola perangkat yang terhubung</p>
                 </div>
                 <ArrowLeft size={16} className="rotate-180" />
