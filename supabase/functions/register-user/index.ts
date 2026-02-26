@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { name, email, password, phone } = await req.json()
+    const { name, email, password, phone, role, village, city } = await req.json()
 
     if (!email || !password || !name) {
       return new Response(
@@ -42,6 +42,7 @@ serve(async (req) => {
       user_metadata: {
         name,
         phone,
+        role: role || 'buyer',
       },
     })
 
@@ -53,17 +54,24 @@ serve(async (req) => {
       )
     }
 
-    // Create profile
+    // Create profile with role and address info
+    const profileData: any = {
+      id: userData.user.id,
+      name,
+      email,
+      phone: phone || null,
+      role: role || 'buyer',
+    }
+
+    // Add address fields for farmers
+    if (role === 'farmer') {
+      if (village) profileData.village = village
+      if (city) profileData.city = city
+    }
+
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
-      .insert([
-        {
-          id: userData.user.id,
-          name,
-          email,
-          phone: phone || null,
-        },
-      ])
+      .insert([profileData])
 
     if (profileError) {
       console.error('Error creating profile:', profileError)
@@ -77,6 +85,7 @@ serve(async (req) => {
         user: {
           id: userData.user.id,
           email: userData.user.email,
+          role: role || 'buyer',
         }
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
