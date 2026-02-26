@@ -30,8 +30,7 @@ export default function LoginPage() {
 
     if (success) {
       setStep('otp');
-      // For demo, show the OTP
-      alert('Kode OTP: 123456 (Demo)');
+      alert('Kode verifikasi dikirim ke WhatsApp! Cek pesan masuk.');
     } else {
       setError('Gagal mengirim OTP');
     }
@@ -83,7 +82,7 @@ export default function LoginPage() {
                 />
               </div>
               <p className="text-xs text-black mt-2">
-                Kami akan mengirimkan kode OTP ke nomor ini
+                Kode verifikasi akan dikirim via WhatsApp
               </p>
             </div>
 

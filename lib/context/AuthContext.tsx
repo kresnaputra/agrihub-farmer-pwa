@@ -85,6 +85,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.auth.signInWithOtp({
         phone,
+        options: {
+          channel: 'whatsapp',
+        }
       });
       
       if (error) {

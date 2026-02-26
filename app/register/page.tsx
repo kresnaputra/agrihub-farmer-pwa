@@ -36,7 +36,7 @@ export default function RegisterPage() {
 
     if (success) {
       setStep('otp');
-      alert('Kode OTP: 123456 (Demo)');
+      alert('Kode verifikasi dikirim ke WhatsApp! Cek pesan masuk.');
     } else {
       setError('Gagal mengirim OTP');
     }
@@ -131,7 +131,7 @@ export default function RegisterPage() {
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Kode OTP
+                Kode Verifikasi WhatsApp
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={20} />
@@ -146,7 +146,7 @@ export default function RegisterPage() {
                 />
               </div>
               <p className="text-xs text-black mt-2 text-center">
-                Masukkan 6 digit kode yang dikirim ke {phone}
+                Cek WhatsApp Anda di nomor {phone}
               </p>
             </div>
 
