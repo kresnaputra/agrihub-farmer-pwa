@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
-import { User, Lock, Phone, ArrowRight, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, Phone, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
