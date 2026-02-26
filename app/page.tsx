@@ -334,7 +334,7 @@ export default function FarmerDashboard() {
                 <div className="flex justify-between items-center">
                   <h3 className="font-semibold text-black">Daftar Produk</h3>
                   <button
-                    onClick={() => setShowAddProduct(true)}
+                    onClick={() => router.push('/products/add')}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
                   >
                     + Tambah Produk
@@ -421,6 +421,12 @@ export default function FarmerDashboard() {
                     Belum ada produk. Tambah produk pertama Anda!
                   </div>
                 )}
+                <button
+                  onClick={() => router.push('/products')}
+                  className="w-full py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200"
+                >
+                  Kelola Produk Lengkap →
+                </button>
               </div>
             )}
 
