@@ -9,6 +9,10 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = withPWA({
   reactStrictMode: true,
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
   // swcMinify removed for Next.js 16+ (handled by Turbopack)
   images: {
     remotePatterns: [
