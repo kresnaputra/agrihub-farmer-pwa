@@ -70,7 +70,7 @@ export default function FarmerDashboard() {
     } finally {
       setIsLoadingProducts(false);
     }
-  }, [user, isLoading, router]);
+  };
 
   useEffect(() => {
     setIsOnline(navigator.onLine);
