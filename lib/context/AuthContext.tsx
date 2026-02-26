@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (phone: string, otp: string) => Promise<boolean>;
   register: (name: string, phone: string, otp: string) => Promise<boolean>;
   sendOTP: (phone: string) => Promise<boolean>;
+  requestOTP: (phone: string) => Promise<boolean>; // Alias for backward compatibility
   logout: () => Promise<void>;
 }
 
@@ -192,6 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         register,
         sendOTP,
+        requestOTP: sendOTP, // Alias for backward compatibility
         logout,
       }}
     >
