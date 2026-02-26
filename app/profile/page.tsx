@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
-import { User, Phone, MapPin, Bank, Camera, Save, Loader2, ArrowLeft, Shield, Mail, Home } from 'lucide-react';
+import { User, Phone, MapPin, Landmark, Camera, Save, Loader2, ArrowLeft, Shield, Mail, Home } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
@@ -254,7 +254,7 @@ export default function ProfilePage() {
         {/* Bank Account */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Bank size={18} />
+            <Landmark size={18} />
             Rekening Bank
           </h3>
           <p className="text-sm text-gray-600 mb-4">
