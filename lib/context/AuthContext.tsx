@@ -116,19 +116,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (name: string, email: string, password: string, phone: string): Promise<boolean> => {
     try {
-      // Use API Route to create user (bypasses email confirmation)
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password, phone }),
-      });
+      // Use Edge Function to create user (bypasses email confirmation)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/smooth-worker`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, email, password, phone }),
+        }
+      );
       
       const result = await response.json();
       
       if (!response.ok) {
-        console.error('API error:', result);
+        console.error('Edge Function error:', result);
         return false;
       }
       
