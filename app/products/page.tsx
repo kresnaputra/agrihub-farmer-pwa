@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
-import { Plus, Package, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Package, Edit, Trash2, Search, ArrowLeft } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -77,11 +77,14 @@ export default function ProductsPage() {
     <div className="min-h-screen bg-green-50">
       {/* Header */}
       <div className="bg-green-600 text-white p-4 sticky top-0 z-10">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4 mb-4">
+          <button onClick={() => router.push('/')} className="p-2 -ml-2">
+            <ArrowLeft size={24} />
+          </button>
           <h1 className="text-xl font-bold">Produk Saya</h1>
           <button
             onClick={() => router.push('/products/add')}
-            className="bg-white text-green-600 px-4 py-2 rounded-lg flex items-center gap-2 font-medium"
+            className="ml-auto bg-white text-green-600 px-4 py-2 rounded-lg flex items-center gap-2 font-medium"
           >
             <Plus size={20} />
             Tambah
@@ -96,7 +99,7 @@ export default function ProductsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari produk..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg text-black placeholder:text-gray-400"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border-2 border-white text-black placeholder:text-gray-400"
           />
         </div>
       </div>
@@ -174,24 +177,6 @@ export default function ProductsPage() {
         )}
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-2">
-        <button onClick={() => router.push('/')} className="flex flex-col items-center p-2 text-gray-500">
-          <span className="text-xs">Beranda</span>
-        </button>
-        <button className="flex flex-col items-center p-2 text-green-600">
-          <span className="text-xs font-medium">Produk</span>
-        </button>
-        <button onClick={() => router.push('/orders')} className="flex flex-col items-center p-2 text-gray-500">
-          <span className="text-xs">Pesanan</span>
-        </button>
-        <button onClick={() => router.push('/profile')} className="flex flex-col items-center p-2 text-gray-500">
-          <span className="text-xs">Profil</span>
-        </button>
-      </div>
-
-      {/* Spacer for bottom nav */}
-      <div className="h-16"></div>
     </div>
   );
 }
