@@ -28,11 +28,8 @@ export default function FarmerDashboard() {
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '', unit: 'kg' });
   
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Bawang Merah', price: 25000, stock: 50, unit: 'kg', status: 'active', image: null },
-    { id: 2, name: 'Cabai Rawit', price: 45000, stock: 30, unit: 'kg', status: 'active', image: null },
-    { id: 3, name: 'Padi', price: 8500, stock: 100, unit: 'kg', status: 'active', image: null },
-  ]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   const [orders, setOrders] = useState([
     { id: 'ORD-001', product: 'Bawang Merah', qty: 5, total: 125000, status: 'pending', buyer: 'PT Sumber Jaya', date: '2026-02-25' },
@@ -40,13 +37,38 @@ export default function FarmerDashboard() {
     { id: 'ORD-003', product: 'Padi', qty: 100, total: 850000, status: 'completed', buyer: 'Penggilingan XYZ', date: '2026-02-24' },
   ]);
   
-  const { user, logout, isLoading } = useAuth();
+  const { user, logout, isLoading, supabase } = useAuth();
   const router = useRouter();
 
   // ALL useEffect hooks
   useEffect(() => {
     if (!isLoading && !user) {
       router.push('/login');
+    }
+  }, [isLoading, user, router]);
+
+  // Fetch products from Supabase
+  useEffect(() => {
+    if (user) {
+      fetchProducts();
+    }
+  }, [user]);
+
+  const fetchProducts = async () => {
+    try {
+      setIsLoadingProducts(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setIsLoadingProducts(false);
     }
   }, [user, isLoading, router]);
 
@@ -102,7 +124,7 @@ export default function FarmerDashboard() {
     .reduce((sum, o) => sum + o.total, 0);
 
   const stats = [
-    { label: 'Produk Aktif', value: activeProducts.toString(), icon: Package, color: 'bg-blue-500' },
+    { label: 'Produk Aktif', value: isLoadingProducts ? '...' : activeProducts.toString(), icon: Package, color: 'bg-blue-500' },
     { label: 'Pesanan Baru', value: pendingOrders.toString(), icon: ShoppingCart, color: 'bg-green-500' },
     { label: 'Pendapatan Hari Ini', value: `Rp ${todayIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500' },
     { label: 'Rating', value: '4.8', icon: TrendingUp, color: 'bg-purple-500' },
@@ -394,29 +416,36 @@ export default function FarmerDashboard() {
                   </div>
                 )}
 
-                <div className="space-y-3">
-                  {products.map((product) => (
-                    <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Package size={24} className="text-black" />
+                {isLoadingProducts ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
+                    <p className="text-black mt-2">Memuat produk...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {products.map((product) => (
+                      <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <Package size={24} className="text-black" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-black">{product.name}</h4>
+                            <p className="text-sm text-black">Stok: {product.stock} {product.unit}</p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="font-medium text-black">{product.name}</h4>
-                          <p className="text-sm text-black">Stok: {product.stock} {product.unit}</p>
+                        <div className="text-right">
+                          <p className="font-bold text-black">Rp {product.price.toLocaleString()}</p>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}>
+                            {product.status === 'active' ? 'Aktif' : 'Nonaktif'}
+                          </span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-black">Rp {product.price.toLocaleString()}</p>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}>
-                          {product.status === 'active' ? 'Aktif' : 'Nonaktif'}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
 
-                {products.length === 0 && (
+                {!isLoadingProducts && products.length === 0 && (
                   <div className="text-center py-8 text-black">
                     Belum ada produk. Tambah produk pertama Anda!
                   </div>
