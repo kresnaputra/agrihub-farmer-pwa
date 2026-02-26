@@ -13,29 +13,8 @@ const nextConfig = withPWA({
   images: {
     unoptimized: true,
   },
-  // swcMinify removed for Next.js 16+ (handled by Turbopack)
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'agrihub.vercel.app',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'agrihub.pages.dev',
-        pathname: '/**',
-      },
-    ],
-    formats: ['image/avif', 'image/webp'],
-  },
   experimental: {
+    turbopack: {},
     serverActions: {
       allowedOrigins: ['localhost:3002', 'agrihub.vercel.app'],
     },
@@ -71,14 +50,6 @@ const nextConfig = withPWA({
           }
         ]
       }
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/:path*`,
-      },
     ];
   },
 });
