@@ -47,7 +47,7 @@ export default function RegisterPage() {
     setError('');
     setIsLoading(true);
 
-    const success = await register(phone, name);
+    const success = await register(name, phone, otp);
     setIsLoading(false);
 
     if (success) {
