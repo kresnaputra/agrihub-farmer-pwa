@@ -85,7 +85,7 @@ export default function NotificationsPage() {
       case 'order': return <ShoppingCart size={16} className="text-black" />;
       case 'payment': return <DollarSign size={16} className="text-black" />;
       case 'product': return <Package size={16} className="text-purple-600" />;
-      case 'price': return <TrendingUp size={16} className="text-yellow-600" />;
+      case 'price': return <TrendingUp size={16} className="text-black" />;
       case 'system': return <AlertTriangle size={16} className="text-black" />;
       case 'message': return <MessageSquare size={16} className="text-pink-600" />;
       default: return <Bell size={16} className="text-black" />;
@@ -166,7 +166,7 @@ export default function NotificationsPage() {
       {/* Settings Panel */}
       {showSettings && (
         <div className="bg-white border-b p-4">
-          <h3 className="font-medium mb-2">Pengaturan Notifikasi</h3>
+          <h3 className="font-medium mb-2 text-black">Pengaturan Notifikasi</h3>
           <div className="space-y-2">
             <button
               onClick={markAllAsRead}
@@ -191,7 +191,7 @@ export default function NotificationsPage() {
         <div className="grid grid-cols-3 gap-2 mb-6">
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
             <p className="text-sm text-black">Total</p>
-            <p className="font-bold text-lg">{notifications.length}</p>
+            <p className="font-bold text-lg text-black">{notifications.length}</p>
           </div>
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
             <p className="text-sm text-black">Belum Dibaca</p>
@@ -199,7 +199,7 @@ export default function NotificationsPage() {
           </div>
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
             <p className="text-sm text-black">Penting</p>
-            <p className="font-bold text-lg text-yellow-600">{importantCount}</p>
+            <p className="font-bold text-lg text-black">{importantCount}</p>
           </div>
         </div>
 
@@ -269,7 +269,7 @@ export default function NotificationsPage() {
                     <div className="flex-1">
                       <div className="flex justify-between items-start mb-1">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-medium">{notification.title}</h4>
+                          <h4 className="font-medium text-black">{notification.title}</h4>
                           {notification.isImportant && (
                             <span className="text-xs px-1.5 py-0.5 bg-red-100 text-black rounded-full">
                               Penting
@@ -322,31 +322,31 @@ export default function NotificationsPage() {
 
         {/* Notification Types Info */}
         <div className="mt-6 bg-gray-50 rounded-xl p-4">
-          <h4 className="font-medium mb-3">Jenis Notifikasi</h4>
+          <h4 className="font-medium mb-3 text-black">Jenis Notifikasi</h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div className="flex items-center gap-2">
               <ShoppingCart size={14} className="text-black" />
-              <span className="text-sm">Pesanan</span>
+              <span className="text-sm text-black">Pesanan</span>
             </div>
             <div className="flex items-center gap-2">
               <DollarSign size={14} className="text-black" />
-              <span className="text-sm">Pembayaran</span>
+              <span className="text-sm text-black">Pembayaran</span>
             </div>
             <div className="flex items-center gap-2">
               <Package size={14} className="text-purple-600" />
-              <span className="text-sm">Produk</span>
+              <span className="text-sm text-black">Produk</span>
             </div>
             <div className="flex items-center gap-2">
-              <TrendingUp size={14} className="text-yellow-600" />
-              <span className="text-sm">Harga</span>
+              <TrendingUp size={14} className="text-black" />
+              <span className="text-sm text-black">Harga</span>
             </div>
             <div className="flex items-center gap-2">
               <AlertTriangle size={14} className="text-black" />
-              <span className="text-sm">Sistem</span>
+              <span className="text-sm text-black">Sistem</span>
             </div>
             <div className="flex items-center gap-2">
               <MessageSquare size={14} className="text-pink-600" />
-              <span className="text-sm">Pesan</span>
+              <span className="text-sm text-black">Pesan</span>
             </div>
           </div>
         </div>
@@ -354,7 +354,7 @@ export default function NotificationsPage() {
         {/* Tips */}
         <div className="mt-6 bg-green-50 border border-green-200 rounded-xl p-4">
           <h4 className="font-medium text-black mb-2">Tips</h4>
-          <ul className="text-sm text-green-700 space-y-1">
+          <ul className="text-sm text-black space-y-1">
             <li>• Notifikasi penting akan tetap muncul di atas</li>
             <li>• Aktifkan push notification di pengaturan</li>
             <li>• Setel alert harga untuk komoditas favorit</li>
