@@ -15,7 +15,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string, phone: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, phone: string, role?: 'buyer' | 'farmer', village?: string, city?: string) => Promise<boolean>;
   logout: () => Promise<void>;
   supabase: SupabaseClient;
 }
