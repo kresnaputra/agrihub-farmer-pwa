@@ -31,11 +31,8 @@ export default function FarmerDashboard() {
   const [products, setProducts] = useState<any[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
-  const [orders, setOrders] = useState([
-    { id: 'ORD-001', product: 'Bawang Merah', qty: 5, total: 125000, status: 'pending', buyer: 'PT Sumber Jaya', date: '2026-02-25' },
-    { id: 'ORD-002', product: 'Cabai Rawit', qty: 2, total: 90000, status: 'processing', buyer: 'Warung Bu Ani', date: '2026-02-25' },
-    { id: 'ORD-003', product: 'Padi', qty: 100, total: 850000, status: 'completed', buyer: 'Penggilingan XYZ', date: '2026-02-24' },
-  ]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   
   const { user, logout, isLoading, supabase } = useAuth();
   const router = useRouter();
@@ -69,6 +66,44 @@ export default function FarmerDashboard() {
       console.error('Error fetching products:', error);
     } finally {
       setIsLoadingProducts(false);
+    }
+  };
+
+  // Fetch orders from Supabase
+  useEffect(() => {
+    if (user) {
+      fetchOrders();
+    }
+  }, [user]);
+
+  const fetchOrders = async () => {
+    try {
+      setIsLoadingOrders(true);
+      const { data, error } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          products:name(product_id)
+        `)
+        .eq('seller_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedOrders = data?.map((order: any) => ({
+        ...order,
+        product: order.products?.name || 'Produk tidak ditemukan',
+        qty: order.quantity,
+        total: order.total_price,
+        buyer: order.buyer_name,
+        date: new Date(order.created_at).toISOString().split('T')[0]
+      })) || [];
+
+      setOrders(formattedOrders);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setIsLoadingOrders(false);
     }
   };
 
@@ -119,13 +154,14 @@ export default function FarmerDashboard() {
 
   const activeProducts = products.filter(p => p.status === 'active').length;
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
+  const today = new Date().toISOString().split('T')[0];
   const todayIncome = orders
-    .filter(o => o.date === '2026-02-25' && o.status !== 'cancelled')
+    .filter(o => o.date === today && o.status !== 'cancelled')
     .reduce((sum, o) => sum + o.total, 0);
 
   const stats = [
     { label: 'Produk Aktif', value: isLoadingProducts ? '...' : activeProducts.toString(), icon: Package, color: 'bg-blue-500' },
-    { label: 'Pesanan Baru', value: pendingOrders.toString(), icon: ShoppingCart, color: 'bg-green-500' },
+    { label: 'Pesanan Baru', value: isLoadingOrders ? '...' : pendingOrders.toString(), icon: ShoppingCart, color: 'bg-green-500' },
     { label: 'Pendapatan Hari Ini', value: `Rp ${todayIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500' },
     { label: 'Rating', value: '4.8', icon: TrendingUp, color: 'bg-purple-500' },
   ];
@@ -461,67 +497,65 @@ export default function FarmerDashboard() {
 
             {activeTab === 'orders' && (
               <div className="space-y-4">
-                <h3 className="font-semibold text-black">Daftar Pesanan</h3>
-                
-                <div className="space-y-3">
-                  {orders.map((order) => (
-                    <div key={order.id} className="p-4 border rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <h4 className="font-medium text-black">{order.product}</h4>
-                          <p className="text-sm text-black">ID: {order.id} • Pembeli: {order.buyer}</p>
-                        </div>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === 'completed' ? 'bg-green-100 text-black' :
-                          order.status === 'processing' ? 'bg-blue-100 text-black' :
-                          'bg-yellow-100 text-black'
-                        }`}>
-                          {order.status === 'completed' ? 'Selesai' :
-                           order.status === 'processing' ? 'Diproses' : 'Pending'}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <p className="text-sm text-black">Jumlah</p>
-                          <p className="font-medium text-black">{order.qty} kg</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-black">Total</p>
-                          <p className="font-medium text-black">Rp {order.total.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-black">Tanggal</p>
-                          <p className="font-medium text-black">{order.date}</p>
-                        </div>
-                      </div>
-                      {order.status !== 'completed' && (
-                        <div className="mt-3 flex gap-2">
-                          {order.status === 'pending' && (
-                            <button
-                              onClick={() => handleUpdateOrderStatus(order.id, 'processing')}
-                              className="px-3 py-1 rounded text-sm bg-blue-600 text-white hover:bg-blue-700"
-                            >
-                              Proses
-                            </button>
-                          )}
-                          {order.status === 'processing' && (
-                            <button
-                              onClick={() => handleUpdateOrderStatus(order.id, 'completed')}
-                              className="px-3 py-1 rounded text-sm bg-green-600 text-white hover:bg-green-700"
-                            >
-                              Selesai
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                <div className="flex justify-between items-center">
+                  <h3 className="font-semibold text-black">Daftar Pesanan</h3>
                 </div>
+                
+                {isLoadingOrders ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
+                    <p className="text-black mt-2">Memuat pesanan...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {orders.slice(0, 5).map((order) => (
+                      <div key={order.id} className="p-4 border rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <h4 className="font-medium text-black">{order.product}</h4>
+                            <p className="text-sm text-black">ID: {order.id} • Pembeli: {order.buyer}</p>
+                          </div>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            order.status === 'completed' ? 'bg-green-100 text-black' :
+                            order.status === 'processing' ? 'bg-blue-100 text-black' :
+                            'bg-yellow-100 text-black'
+                          }`}>
+                            {order.status === 'completed' ? 'Selesai' :
+                             order.status === 'processing' ? 'Diproses' : 'Pending'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <p className="text-sm text-black">Jumlah</p>
+                            <p className="font-medium text-black">{order.qty} item</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-black">Total</p>
+                            <p className="font-medium text-black">Rp {order.total.toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-black">Tanggal</p>
+                            <p className="font-medium text-black">{order.date}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-                {orders.length === 0 && (
+                {!isLoadingOrders && orders.length === 0 && (
                   <div className="text-center py-8 text-black">
                     Belum ada pesanan.
                   </div>
+                )}
+                
+                {!isLoadingOrders && orders.length > 0 && (
+                  <button
+                    onClick={() => router.push('/orders')}
+                    className="w-full py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200"
+                  >
+                    Kelola Pesanan Lengkap →
+                  </button>
                 )}
               </div>
             )}
