@@ -1,0 +1,5 @@
+# Single Page App fallback
+/* /index.html 200
+
+# API proxy (if needed)
+# /api/* https://api.agrihub.pages.dev/api/:splat 200
