@@ -84,17 +84,17 @@ export default function FarmerDashboard() {
                 <span className="text-green-600 font-bold">A</span>
               </div>
               <div>
-                <h1 className="font-semibold text-gray-900">AgriHub Petani</h1>
+                <h1 className="font-semibold text-black">AgriHub Petani</h1>
                 <div className="flex items-center gap-1 text-xs">
                   {isOnline ? (
                     <>
                       <Cloud size={12} className="text-green-500" />
-                      <span className="text-green-600">Online</span>
+                      <span className="text-green-700 font-medium">Online</span>
                     </>
                   ) : (
                     <>
-                      <CloudOff size={12} className="text-gray-500" />
-                      <span className="text-gray-600">Offline (mode lokal)</span>
+                      <CloudOff size={12} className="text-gray-600" />
+                      <span className="text-gray-800 font-medium">Offline (mode lokal)</span>
                     </>
                   )}
                 </div>
@@ -129,7 +129,7 @@ export default function FarmerDashboard() {
             <div key={stat.label} className="bg-white rounded-xl shadow-sm p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
+                  <p className="text-sm text-gray-800">{stat.label}</p>
                   <p className="text-2xl font-bold mt-1">{stat.value}</p>
                 </div>
                 <div className={`${stat.color} p-3 rounded-full`}>
@@ -174,9 +174,9 @@ export default function FarmerDashboard() {
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <h4 className="font-medium">{activity.product}</h4>
-                      <span className="text-sm text-gray-500">{activity.time}</span>
+                      <span className="text-sm text-gray-700">{activity.time}</span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">{activity.action}</p>
+                    <p className="text-sm text-gray-800 mt-1">{activity.action}</p>
                     <p className="text-sm font-semibold text-green-700 mt-1">{activity.amount}</p>
                   </div>
                 </div>
@@ -197,9 +197,9 @@ export default function FarmerDashboard() {
                 <div key={idx} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50">
                   <div>
                     <h4 className="font-medium">{item.product}</h4>
-                    <p className="text-sm text-gray-500">{item.price}</p>
+                    <p className="text-sm text-gray-700">{item.price}</p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.change.startsWith('+') ? 'bg-green-100 text-green-800' : item.change.startsWith('-') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'}`}>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${item.change.startsWith('+') ? 'bg-green-100 text-green-800' : item.change.startsWith('-') ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-900'}`}>
                     {item.change}
                   </span>
                 </div>
@@ -233,7 +233,7 @@ export default function FarmerDashboard() {
           <a
             key={action.label}
             href={action.href}
-            className="flex flex-col items-center p-2 text-gray-600 hover:text-green-600"
+            className="flex flex-col items-center p-2 text-gray-800 hover:text-green-600"
           >
             <action.icon size={20} />
             <span className="text-xs mt-1">{action.label}</span>
