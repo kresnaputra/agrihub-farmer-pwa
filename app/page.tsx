@@ -1,63 +1,57 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Search, ShoppingCart, MapPin, Star, ArrowLeft, Plus, Minus, Store, Package } from 'lucide-react';
 import { useAuth } from '@/lib/context/AuthContext';
-import { 
-  ShoppingCart, 
-  Package, 
-  DollarSign, 
-  TrendingUp,
-  Bell,
-  User,
-  Menu,
-  LogOut,
-  Cloud,
-  CloudOff,
-  Download,
-  Plus,
-  ChevronRight
-} from 'lucide-react';
 
-export default function FarmerDashboard() {
-  // ALL HOOKS MUST BE FIRST - before any early returns
-  const [isOnline, setIsOnline] = useState(true);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'orders'>('overview');
-  const [showAddProduct, setShowAddProduct] = useState(false);
-  const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '', unit: 'kg' });
-  
-  const [products, setProducts] = useState<any[]>([]);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  unit: string;
+  image_url?: string;
+  description?: string;
+  user_id?: string;
+  seller?: {
+    name: string;
+    phone: string;
+    village: string;
+    city: string;
+  };
+}
 
-  const [orders, setOrders] = useState<any[]>([]);
-  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
+export default function BuyerPortal() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [orderQuantity, setOrderQuantity] = useState(1);
+  const [buyerName, setBuyerName] = useState('');
+  const [buyerPhone, setBuyerPhone] = useState('');
+  const [notes, setNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
   
-  const { user, logout, isLoading, supabase } = useAuth();
+  const { supabase } = useAuth();
   const router = useRouter();
 
-  // ALL useEffect hooks
   useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/login');
-    }
-  }, [isLoading, user, router]);
-
-  // Fetch products from Supabase
-  useEffect(() => {
-    if (user) {
-      fetchProducts();
-    }
-  }, [user]);
+    fetchProducts();
+  }, []);
 
   const fetchProducts = async () => {
     try {
-      setIsLoadingProducts(true);
+      setIsLoading(true);
       const { data, error } = await supabase
         .from('products')
-        .select('*')
-        .eq('user_id', user?.id)
+        .select(`
+          *,
+          seller:profiles(name, phone, village, city)
+        `)
+        .eq('status', 'active')
+        .gt('stock', 0)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -65,537 +59,371 @@ export default function FarmerDashboard() {
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
-      setIsLoadingProducts(false);
+      setIsLoading(false);
     }
   };
 
-  // Fetch orders from Supabase
-  useEffect(() => {
-    if (user) {
-      fetchOrders();
-    }
-  }, [user]);
+  const handleOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedProduct) return;
 
-  const fetchOrders = async () => {
+    setIsSubmitting(true);
+
     try {
-      setIsLoadingOrders(true);
-      const { data, error } = await supabase
+      const totalPrice = selectedProduct.price * orderQuantity;
+
+      const { error } = await supabase
         .from('orders')
-        .select(`
-          *,
-          products:name(product_id)
-        `)
-        .eq('seller_id', user?.id)
-        .order('created_at', { ascending: false });
+        .insert([
+          {
+            product_id: selectedProduct.id,
+            seller_id: selectedProduct.user_id,
+            buyer_name: buyerName,
+            buyer_phone: buyerPhone,
+            quantity: orderQuantity,
+            total_price: totalPrice,
+            notes: notes,
+            status: 'pending',
+          },
+        ]);
 
       if (error) throw error;
 
-      const formattedOrders = data?.map((order: any) => ({
-        ...order,
-        product: order.products?.name || 'Produk tidak ditemukan',
-        qty: order.quantity,
-        total: order.total_price,
-        buyer: order.buyer_name,
-        date: new Date(order.created_at).toISOString().split('T')[0]
-      })) || [];
-
-      setOrders(formattedOrders);
+      setOrderSuccess(true);
+      setTimeout(() => {
+        setSelectedProduct(null);
+        setOrderSuccess(false);
+        setBuyerName('');
+        setBuyerPhone('');
+        setNotes('');
+        setOrderQuantity(1);
+      }, 2000);
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error('Error placing order:', error);
+      alert('Gagal memesan. Silakan coba lagi.');
     } finally {
-      setIsLoadingOrders(false);
+      setIsSubmitting(false);
     }
   };
 
-  useEffect(() => {
-    setIsOnline(navigator.onLine);
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.seller?.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  useEffect(() => {
-    const handler = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setIsInstallable(true);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
 
-  // NOW safe to have early returns
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mb-4"></div>
+        <p className="text-gray-600">Memuat produk...</p>
       </div>
     );
   }
 
-  if (!user) return null;
+  // Order Modal
+  if (selectedProduct) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <div className="bg-white shadow-sm sticky top-0 z-10">
+          <div className="max-w-lg mx-auto px-4 h-14 flex items-center gap-4">
+            <button 
+              onClick={() => setSelectedProduct(null)} 
+              className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft size={24} className="text-gray-700" />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-800">Detail Produk</h1>
+          </div>
+        </div>
 
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setIsInstallable(false);
-    }
-    setDeferredPrompt(null);
-  };
+        {orderSuccess ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+            <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+              <ShoppingCart className="text-green-600" size={48} />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Pesanan Berhasil!</h2>
+            <p className="text-gray-600 text-center max-w-sm">
+              Pesanan Anda telah dikirim ke petani. Tunggu konfirmasi dari penjual.
+            </p>
+          </div>
+        ) : (
+          <div className="max-w-lg mx-auto">
+            {/* Product Image */}
+            <div className="bg-white">
+              <div className="h-64 bg-gray-100 flex items-center justify-center">
+                {selectedProduct.image_url ? (
+                  <img
+                    src={selectedProduct.image_url}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-center">
+                    <ShoppingCart className="text-gray-300 mx-auto mb-2" size={64} />
+                    <p className="text-gray-400">Tidak ada gambar</p>
+                  </div>
+                )}
+              </div>
 
-  const activeProducts = products.filter(p => p.status === 'active').length;
-  const pendingOrders = orders.filter(o => o.status === 'pending').length;
-  const today = new Date().toISOString().split('T')[0];
-  const todayIncome = orders
-    .filter(o => o.date === today && o.status !== 'cancelled')
-    .reduce((sum, o) => sum + o.total, 0);
+              {/* Product Info */}
+              <div className="p-4 border-b border-gray-100">
+                <h2 className="text-xl font-bold text-gray-800 mb-2">{selectedProduct.name}</h2>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold text-green-600">
+                    {formatPrice(selectedProduct.price)}
+                  </span>
+                  <span className="text-gray-500">/ {selectedProduct.unit}</span>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">
+                  Stok tersedia: <span className="font-medium text-gray-700">{selectedProduct.stock} {selectedProduct.unit}</span>
+                </p>
+              </div>
 
-  const stats = [
-    { label: 'Produk Aktif', value: isLoadingProducts ? '...' : activeProducts.toString(), icon: Package, color: 'bg-blue-500' },
-    { label: 'Pesanan Baru', value: isLoadingOrders ? '...' : pendingOrders.toString(), icon: ShoppingCart, color: 'bg-green-500' },
-    { label: 'Pendapatan Hari Ini', value: `Rp ${todayIncome.toLocaleString()}`, icon: DollarSign, color: 'bg-yellow-500' },
-    { label: 'Rating', value: '4.8', icon: TrendingUp, color: 'bg-purple-500' },
-  ];
+              {/* Seller Info */}
+              {selectedProduct.seller && (
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <Store className="text-green-600" size={24} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-800">{selectedProduct.seller.name}</p>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <MapPin size={14} />
+                        {selectedProduct.seller.village}, {selectedProduct.seller.city}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded">
+                      <Star size={14} className="text-yellow-500 fill-yellow-500" />
+                      <span className="text-sm font-medium text-gray-700">4.8</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-  const handleAddProduct = () => {
-    if (!newProduct.name || !newProduct.price || !newProduct.stock) return;
-    
-    const product = {
-      id: Date.now(),
-      name: newProduct.name,
-      price: parseInt(newProduct.price),
-      stock: parseInt(newProduct.stock),
-      unit: newProduct.unit,
-      status: 'active',
-      image: null
-    };
-    
-    setProducts([...products, product]);
-    setNewProduct({ name: '', price: '', stock: '', unit: 'kg' });
-    setShowAddProduct(false);
-  };
+              {/* Description */}
+              {selectedProduct.description && (
+                <div className="p-4 border-b border-gray-100">
+                  <h3 className="font-semibold text-gray-800 mb-2">Deskripsi</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{selectedProduct.description}</p>
+                </div>
+              )}
+            </div>
 
-  const handleDeleteProduct = (id: number) => {
-    if (confirm('Hapus produk ini?')) {
-      setProducts(products.filter(p => p.id !== id));
-    }
-  };
+            {/* Order Form */}
+            <form onSubmit={handleOrder} className="p-4 space-y-4">
+              {/* Quantity */}
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Jumlah Pesanan
+                </label>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setOrderQuantity(Math.max(1, orderQuantity - 1))}
+                      className="w-10 h-10 rounded-lg border-2 border-gray-200 flex items-center justify-center hover:border-green-500 hover:text-green-600 transition-colors"
+                    >
+                      <Minus size={18} />
+                    </button>
+                    <span className="text-xl font-bold text-gray-800 w-12 text-center">
+                      {orderQuantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setOrderQuantity(Math.min(selectedProduct.stock, orderQuantity + 1))}
+                      className="w-10 h-10 rounded-lg border-2 border-gray-200 flex items-center justify-center hover:border-green-500 hover:text-green-600 transition-colors"
+                    >
+                      <Plus size={18} />
+                    </button>
+                  </div>
+                  <span className="text-gray-500">{selectedProduct.unit}</span>
+                </div>
+              </div>
 
-  const handleUpdateOrderStatus = (orderId: string, newStatus: string) => {
-    setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-  };
+              {/* Buyer Info */}
+              <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
+                <h3 className="font-semibold text-gray-800">Data Pembeli</h3>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Nama Lengkap <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={buyerName}
+                    onChange={(e) => setBuyerName(e.target.value)}
+                    placeholder="Masukkan nama Anda"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    required
+                  />
+                </div>
 
-  const quickActions = activeTab === 'overview' ? [
-    { label: 'Jual Produk', onClick: () => setActiveTab('products'), icon: Package },
-    { label: 'Lihat Pasar', onClick: () => router.push('/marketplace'), icon: TrendingUp },
-    { label: 'Pesanan Saya', onClick: () => setActiveTab('orders'), icon: ShoppingCart },
-    { label: 'Pemberitahuan', onClick: () => router.push('/notifications'), icon: Bell },
-  ] : activeTab === 'products' ? [
-    { label: 'Tambah Produk', onClick: () => setShowAddProduct(true), icon: Plus },
-    { label: 'Refresh', onClick: () => {}, icon: TrendingUp },
-    { label: 'Export Data', onClick: () => {}, icon: Download },
-    { label: 'Bantuan', onClick: () => {}, icon: Bell },
-  ] : [
-    { label: 'Pesanan Baru', onClick: () => {}, icon: ShoppingCart },
-    { label: 'Refresh', onClick: () => {}, icon: TrendingUp },
-    { label: 'Export Data', onClick: () => {}, icon: Download },
-    { label: 'Bantuan', onClick: () => {}, icon: Bell },
-  ];
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Nomor WhatsApp <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={buyerPhone}
+                    onChange={(e) => setBuyerPhone(e.target.value)}
+                    placeholder="08xxxxxxxxxx"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    required
+                  />
+                </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Catatan (opsional)
+                  </label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Tambahkan catatan untuk penjual..."
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                  />
+                </div>
+              </div>
+
+              {/* Total & Submit */}
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-gray-600">Total Harga</span>
+                  <span className="text-2xl font-bold text-green-600">
+                    {formatPrice(selectedProduct.price * orderQuantity)}
+                  </span>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !buyerName || !buyerPhone}
+                  className="w-full bg-green-600 text-white py-4 rounded-xl font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700 transition-colors shadow-lg shadow-green-200"
+                >
+                  {isSubmitting ? 'Memproses...' : 'Pesan Sekarang'}
+                </button>
+              </div>
+            </form>
+
+            {/* Spacer */}
+            <div className="h-6"></div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Product List
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white shadow-sm">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-lg hover:bg-gray-100">
-              <Menu size={20} />
-            </button>
-            <div>
-              <h1 className="font-bold text-black">AgriHub Petani</h1>
-              <p className="text-xs text-black flex items-center gap-1">
-                {isOnline ? (
-                  <><Cloud size={12} className="text-green-500" /> Online</>
-                ) : (
-                  <><CloudOff size={12} className="text-red-500" /> Offline</>
-                )}
-              </p>
-            </div>
+      <div className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 h-14 flex items-center gap-3">
+          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center -ml-2">
+            <ShoppingCart className="text-green-600" size={20} />
           </div>
-          
-          <div className="flex items-center gap-2">
-            {isInstallable && (
-              <button 
-                onClick={handleInstall}
-                className="hidden md:flex items-center gap-2 px-3 py-1 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
-              >
-                <Download size={16} />
-                Install App
-              </button>
-            )}
-            <button 
-              onClick={() => router.push('/profile')}
-              className="hidden md:flex items-center gap-2 px-3 py-1 border-r border-gray-200 hover:bg-gray-50 rounded-lg"
-            >
-              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                <span className="text-black text-xs font-bold">{user.name.charAt(0)}</span>
-              </div>
-              <span className="text-sm font-medium text-black">{user.name.split(' ')[0]}</span>
-            </button>
-            <button 
-              onClick={() => router.push('/notifications')}
-              className="p-2 rounded-lg hover:bg-gray-100 relative"
-            >
-              <Bell size={20} />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <button 
-              onClick={logout}
-              className="p-2 rounded-lg hover:bg-gray-100"
-              title="Keluar"
-            >
-              <LogOut size={20} />
-            </button>
+          <div className="flex-1">
+            <h1 className="font-bold text-gray-800">Marketplace</h1>
+            <p className="text-xs text-gray-500">Beli langsung dari petani</p>
+          </div>
+          <button
+            onClick={() => router.push('/login')}
+            className="px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Login Petani
+          </button>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="bg-white shadow-sm pb-3">
+        <div className="max-w-lg mx-auto px-4">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari produk atau petani..."
+              className="w-full pl-12 pr-4 py-3 bg-gray-100 border-0 rounded-xl text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="p-4 max-w-6xl mx-auto">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {stats.map((stat) => (
-            <div key={stat.label} className="bg-white rounded-xl shadow-sm p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-black">{stat.label}</p>
-                  <p className="text-2xl font-bold mt-1 text-black">{stat.value}</p>
+      {/* Product Grid */}
+      <div className="max-w-lg mx-auto p-4">
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="text-gray-300" size={40} />
+            </div>
+            <p className="text-gray-800 font-medium text-lg mb-1">Produk tidak ditemukan</p>
+            <p className="text-gray-500 text-sm">Coba kata kunci lain</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {filteredProducts.map((product) => (
+              <div
+                key={product.id}
+                onClick={() => setSelectedProduct(product)}
+                className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow active:scale-95"
+              >
+                {/* Product Image */}
+                <div className="aspect-square bg-gray-100 relative">
+                  {product.image_url ? (
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <ShoppingCart className="text-gray-300" size={48} />
+                    </div>
+                  )}
+                  {/* Stock Badge */}
+                  <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                    Stok: {product.stock}
+                  </div>
                 </div>
-                <div className={`${stat.color} p-3 rounded-full`}>
-                  <stat.icon size={20} className="text-white" />
+
+                {/* Product Info */}
+                <div className="p-3">
+                  <h3 className="font-medium text-gray-800 text-sm line-clamp-2 min-h-[2.5rem]">
+                    {product.name}
+                  </h3>
+                  <div className="mt-2">
+                    <span className="text-green-600 font-bold">
+                      {formatPrice(product.price)}
+                    </span>
+                    <span className="text-gray-400 text-xs">/{product.unit}</span>
+                  </div>
+                  {product.seller && (
+                    <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
+                      <Store size={12} />
+                      <span className="truncate">{product.seller.name}</span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <h2 className="text-lg font-semibold mb-4 text-black">Aksi Cepat</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {quickActions.map((action) => (
-              <button
-                key={action.label}
-                type="button"
-                onClick={action.onClick}
-                className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors"
-              >
-                <action.icon size={24} className="text-black mb-2" />
-                <span className="text-sm font-medium text-center text-black">{action.label}</span>
-              </button>
             ))}
           </div>
-        </div>
+        )}
+      </div>
 
-        {/* Tab Navigation */}
-        <div className="bg-white rounded-xl shadow-sm mb-6">
-          <div className="flex border-b border-gray-200">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'overview' ? 'text-black border-b-2 border-green-600' : ''}`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('products')}
-              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'products' ? 'text-black border-b-2 border-green-600' : ''}`}
-            >
-              Produk ({activeProducts})
-            </button>
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'orders' ? 'text-black border-b-2 border-green-600' : ''}`}
-            >
-              Pesanan ({pendingOrders})
-            </button>
-          </div>
-
-          {/* Tab Content */}
-          <div className="p-4">
-            {activeTab === 'overview' && (
-              <div className="space-y-4">
-                {/* Marketplace Promo */}
-                <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
-                  <h3 className="font-bold text-lg mb-1">Marketplace</h3>
-                  <p className="text-sm text-white/90 mb-3">Beli dan jual produk pertanian langsung dari petani</p>
-                  <button
-                    onClick={() => router.push('/marketplace')}
-                    className="bg-white text-green-600 px-4 py-2 rounded-lg text-sm font-medium"
-                  >
-                    Lihat Produk →
-                  </button>
-                </div>
-
-                {/* Recent Activity */}
-                <div>
-                  <h3 className="font-semibold mb-3 text-black">Aktivitas Terbaru</h3>
-                  <div className="space-y-3">
-                    {orders.slice(0, 3).map((order) => (
-                      <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                            <ShoppingCart size={16} className="text-black" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-black">{order.product}</p>
-                            <p className="text-sm text-black">{order.buyer} • {order.date}</p>
-                          </div>
-                        </div>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === 'completed' ? 'bg-green-100 text-black' :
-                          order.status === 'processing' ? 'bg-blue-100 text-black' :
-                          'bg-yellow-100 text-black'
-                        }`}>
-                          {order.status === 'completed' ? 'Selesai' :
-                           order.status === 'processing' ? 'Diproses' : 'Pending'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Market Prices */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-black">Harga Pasar Hari Ini</h3>
-                    <button 
-                      onClick={() => router.push('/marketplace')}
-                      className="text-sm text-black font-medium hover:underline"
-                    >
-                      Lihat Semua →
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-black">Bawang Merah</p>
-                      <p className="font-bold text-black">Rp 25,000/kg</p>
-                      <p className="text-xs text-black">+5% dari kemarin</p>
-                    </div>
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-black">Cabai Rawit</p>
-                      <p className="font-bold text-black">Rp 45,000/kg</p>
-                      <p className="text-xs text-black">-2% dari kemarin</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'products' && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-black">Daftar Produk</h3>
-                  <button
-                    onClick={() => router.push('/products/add')}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
-                  >
-                    + Tambah Produk
-                  </button>
-                </div>
-
-                {showAddProduct && (
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-medium mb-3 text-black">Produk Baru</h4>
-                    <div className="grid grid-cols-2 gap-3 mb-3">
-                      <input
-                        type="text"
-                        value={newProduct.name}
-                        onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                        placeholder="Nama produk"
-                        className="p-2 border rounded-lg text-black"
-                      />
-                      <input
-                        type="number"
-                        value={newProduct.price}
-                        onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                        placeholder="Harga"
-                        className="p-2 border rounded-lg text-black"
-                      />
-                      <input
-                        type="number"
-                        value={newProduct.stock}
-                        onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                        placeholder="Stok"
-                        className="p-2 border rounded-lg text-black"
-                      />
-                      <select
-                        value={newProduct.unit}
-                        onChange={(e) => setNewProduct({...newProduct, unit: e.target.value})}
-                        className="p-2 border rounded-lg text-black"
-                      >
-                        <option value="kg">kg</option>
-                        <option value="gram">gram</option>
-                        <option value="unit">unit</option>
-                        <option value="pack">pack</option>
-                      </select>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleAddProduct}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
-                      >
-                        Simpan
-                      </button>
-                      <button
-                        onClick={() => setShowAddProduct(false)}
-                        className="px-4 py-2 bg-gray-200 text-black rounded-lg text-sm font-medium hover:bg-gray-300"
-                      >
-                        Batal
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {isLoadingProducts ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-                    <p className="text-black mt-2">Memuat produk...</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {products.map((product) => (
-                      <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <Package size={24} className="text-black" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-black">{product.name}</h4>
-                            <p className="text-sm text-black">Stok: {product.stock} {product.unit}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-black">Rp {product.price.toLocaleString()}</p>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}>
-                            {product.status === 'active' ? 'Aktif' : 'Nonaktif'}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {!isLoadingProducts && products.length === 0 && (
-                  <div className="text-center py-8 text-black">
-                    Belum ada produk. Tambah produk pertama Anda!
-                  </div>
-                )}
-                <button
-                  onClick={() => router.push('/products')}
-                  className="w-full py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200"
-                >
-                  Kelola Produk Lengkap →
-                </button>
-              </div>
-            )}
-
-            {activeTab === 'orders' && (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-semibold text-black">Daftar Pesanan</h3>
-                </div>
-                
-                {isLoadingOrders ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-                    <p className="text-black mt-2">Memuat pesanan...</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {orders.slice(0, 5).map((order) => (
-                      <div key={order.id} className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h4 className="font-medium text-black">{order.product}</h4>
-                            <p className="text-sm text-black">ID: {order.id} • Pembeli: {order.buyer}</p>
-                          </div>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            order.status === 'completed' ? 'bg-green-100 text-black' :
-                            order.status === 'processing' ? 'bg-blue-100 text-black' :
-                            'bg-yellow-100 text-black'
-                          }`}>
-                            {order.status === 'completed' ? 'Selesai' :
-                             order.status === 'processing' ? 'Diproses' : 'Pending'}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-4 text-sm">
-                          <div>
-                            <p className="text-sm text-black">Jumlah</p>
-                            <p className="font-medium text-black">{order.qty} item</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-black">Total</p>
-                            <p className="font-medium text-black">Rp {order.total.toLocaleString()}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-black">Tanggal</p>
-                            <p className="font-medium text-black">{order.date}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {!isLoadingOrders && orders.length === 0 && (
-                  <div className="text-center py-8 text-black">
-                    Belum ada pesanan.
-                  </div>
-                )}
-                
-                {!isLoadingOrders && orders.length > 0 && (
-                  <button
-                    onClick={() => router.push('/orders')}
-                    className="w-full py-3 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200"
-                  >
-                    Kelola Pesanan Lengkap →
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* Bottom Navigation for Mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
-        <div className="flex justify-around py-2">
-          <button onClick={() => setActiveTab('products')} className="flex flex-col items-center p-2">
-            <Package size={20} className="text-black" />
-            <span className="text-xs text-black mt-1">Jual Produk</span>
-          </button>
-          <button onClick={() => router.push('/marketplace')} className="flex flex-col items-center p-2">
-            <TrendingUp size={20} className="text-black" />
-            <span className="text-xs text-black mt-1">Lihat Pasar</span>
-          </button>
-          <button onClick={() => setActiveTab('orders')} className="flex flex-col items-center p-2">
-            <ShoppingCart size={20} className="text-black" />
-            <span className="text-xs text-black mt-1">Pesanan Saya</span>
-          </button>
-          <button onClick={() => router.push('/notifications')} className="flex flex-col items-center p-2">
-            <Bell size={20} className="text-black" />
-            <span className="text-xs text-black mt-1">Pemberitahuan</span>
-          </button>
-        </div>
-      </nav>
+      {/* Bottom Spacer */}
+      <div className="h-6"></div>
     </div>
   );
 }
