@@ -332,6 +332,18 @@ export default function FarmerDashboard() {
           <div className="p-4">
             {activeTab === 'overview' && (
               <div className="space-y-4">
+                {/* Marketplace Promo */}
+                <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                  <h3 className="font-bold text-lg mb-1">Marketplace</h3>
+                  <p className="text-sm text-white/90 mb-3">Beli dan jual produk pertanian langsung dari petani</p>
+                  <button
+                    onClick={() => router.push('/marketplace')}
+                    className="bg-white text-green-600 px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    Lihat Produk →
+                  </button>
+                </div>
+
                 {/* Recent Activity */}
                 <div>
                   <h3 className="font-semibold mb-3 text-black">Aktivitas Terbaru</h3>
