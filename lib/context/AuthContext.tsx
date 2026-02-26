@@ -116,40 +116,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (name: string, email: string, password: string, phone: string): Promise<boolean> => {
     try {
-      // Create auth user
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      
-      if (error || !data.user) {
-        console.error('Error registering:', error);
-        return false;
-      }
-      
-      // Create profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert([
-          {
-            id: data.user.id,
-            name,
-            email,
-            phone,
+      // Use Edge Function to create user (bypasses email confirmation)
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/register-user`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
           },
-        ]);
+          body: JSON.stringify({ name, email, password, phone }),
+        }
+      );
       
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        console.error('Edge Function error:', result);
         return false;
       }
-      
-      setUser({
-        id: data.user.id,
-        name,
-        email,
-        phone,
-      });
       
       return true;
     } catch (error) {
