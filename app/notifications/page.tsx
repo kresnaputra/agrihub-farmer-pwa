@@ -82,8 +82,8 @@ export default function NotificationsPage() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'order': return <ShoppingCart size={16} className="text-blue-600" />;
-      case 'payment': return <DollarSign size={16} className="text-green-600" />;
+      case 'order': return <ShoppingCart size={16} className="text-black" />;
+      case 'payment': return <DollarSign size={16} className="text-black" />;
       case 'product': return <Package size={16} className="text-purple-600" />;
       case 'price': return <TrendingUp size={16} className="text-yellow-600" />;
       case 'system': return <AlertTriangle size={16} className="text-black" />;
@@ -177,7 +177,7 @@ export default function NotificationsPage() {
             </button>
             <button
               onClick={clearAll}
-              className="w-full text-left p-2 hover:bg-gray-50 rounded flex items-center gap-2 text-red-600"
+              className="w-full text-left p-2 hover:bg-gray-50 rounded flex items-center gap-2 text-black"
             >
               <Trash2 size={16} />
               Hapus semua notifikasi
@@ -195,7 +195,7 @@ export default function NotificationsPage() {
           </div>
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
             <p className="text-sm text-black">Belum Dibaca</p>
-            <p className="font-bold text-lg text-blue-600">{unreadCount}</p>
+            <p className="font-bold text-lg text-black">{unreadCount}</p>
           </div>
           <div className="bg-white rounded-lg p-3 text-center shadow-sm">
             <p className="text-sm text-black">Penting</p>
@@ -208,19 +208,19 @@ export default function NotificationsPage() {
           <div className="flex flex-wrap gap-2 mb-4">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}
             >
               Semua
             </button>
             <button
               onClick={() => setFilter('unread')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'unread' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-black'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'unread' ? 'bg-blue-100 text-black' : 'bg-gray-100 text-black'}`}
             >
               Belum Dibaca
             </button>
             <button
               onClick={() => setFilter('important')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'important' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-black'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'important' ? 'bg-yellow-100 text-black' : 'bg-gray-100 text-black'}`}
             >
               Penting
             </button>
@@ -271,7 +271,7 @@ export default function NotificationsPage() {
                         <div className="flex items-center gap-2">
                           <h4 className="font-medium">{notification.title}</h4>
                           {notification.isImportant && (
-                            <span className="text-xs px-1.5 py-0.5 bg-red-100 text-red-800 rounded-full">
+                            <span className="text-xs px-1.5 py-0.5 bg-red-100 text-black rounded-full">
                               Penting
                             </span>
                           )}
@@ -292,14 +292,14 @@ export default function NotificationsPage() {
                           {!notification.isRead && (
                             <button
                               onClick={() => markAsRead(notification.id)}
-                              className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                              className="text-xs text-black hover:text-black flex items-center gap-1"
                             >
                               <Check size={12} />
                               Tandai dibaca
                             </button>
                           )}
                           {notification.action && (
-                            <button className="text-xs text-green-600 hover:text-green-800">
+                            <button className="text-xs text-black hover:text-black">
                               {notification.action.charAt(0).toUpperCase() + notification.action.slice(1)} →
                             </button>
                           )}
@@ -325,11 +325,11 @@ export default function NotificationsPage() {
           <h4 className="font-medium mb-3">Jenis Notifikasi</h4>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <div className="flex items-center gap-2">
-              <ShoppingCart size={14} className="text-blue-600" />
+              <ShoppingCart size={14} className="text-black" />
               <span className="text-sm">Pesanan</span>
             </div>
             <div className="flex items-center gap-2">
-              <DollarSign size={14} className="text-green-600" />
+              <DollarSign size={14} className="text-black" />
               <span className="text-sm">Pembayaran</span>
             </div>
             <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ export default function NotificationsPage() {
 
         {/* Tips */}
         <div className="mt-6 bg-green-50 border border-green-200 rounded-xl p-4">
-          <h4 className="font-medium text-green-800 mb-2">Tips</h4>
+          <h4 className="font-medium text-black mb-2">Tips</h4>
           <ul className="text-sm text-green-700 space-y-1">
             <li>• Notifikasi penting akan tetap muncul di atas</li>
             <li>• Aktifkan push notification di pengaturan</li>

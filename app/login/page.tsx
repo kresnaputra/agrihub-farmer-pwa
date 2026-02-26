@@ -162,7 +162,7 @@ export default function LoginPage() {
         <div className="mt-6 pt-6 border-t border-gray-100 text-center">
           <p className="text-sm text-black">
             Belum punya akun?{' '}
-            <a href="/register" className="text-green-600 font-medium hover:text-green-700">
+            <a href="/register" className="text-black font-medium hover:text-green-700">
               Daftar sekarang
             </a>
           </p>
@@ -172,7 +172,7 @@ export default function LoginPage() {
       {/* Footer */}
       <p className="text-center text-sm text-black mt-8">
         Dengan masuk, Anda menyetujui{' '}
-        <a href="#" className="text-green-600">Syarat dan Ketentuan</a>
+        <a href="#" className="text-black">Syarat dan Ketentuan</a>
       </p>
     </div>
   );

@@ -240,7 +240,7 @@ export default function FarmerDashboard() {
                 onClick={action.onClick}
                 className="flex flex-col items-center justify-center p-4 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors"
               >
-                <action.icon size={24} className="text-green-600 mb-2" />
+                <action.icon size={24} className="text-black mb-2" />
                 <span className="text-sm font-medium text-center text-black">{action.label}</span>
               </button>
             ))}
@@ -252,19 +252,19 @@ export default function FarmerDashboard() {
           <div className="flex border-b border-gray-200">
             <button
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'overview' ? 'text-green-600 border-b-2 border-green-600' : ''}`}
+              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'overview' ? 'text-black border-b-2 border-green-600' : ''}`}
             >
               Overview
             </button>
             <button
               onClick={() => setActiveTab('products')}
-              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'products' ? 'text-green-600 border-b-2 border-green-600' : ''}`}
+              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'products' ? 'text-black border-b-2 border-green-600' : ''}`}
             >
               Produk ({activeProducts})
             </button>
             <button
               onClick={() => setActiveTab('orders')}
-              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'orders' ? 'text-green-600 border-b-2 border-green-600' : ''}`}
+              className={`flex-1 py-3 text-center font-medium text-black ${activeTab === 'orders' ? 'text-black border-b-2 border-green-600' : ''}`}
             >
               Pesanan ({pendingOrders})
             </button>
@@ -282,7 +282,7 @@ export default function FarmerDashboard() {
                       <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                            <ShoppingCart size={16} className="text-green-600" />
+                            <ShoppingCart size={16} className="text-black" />
                           </div>
                           <div>
                             <p className="font-medium text-black">{order.product}</p>
@@ -290,9 +290,9 @@ export default function FarmerDashboard() {
                           </div>
                         </div>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
+                          order.status === 'completed' ? 'bg-green-100 text-black' :
+                          order.status === 'processing' ? 'bg-blue-100 text-black' :
+                          'bg-yellow-100 text-black'
                         }`}>
                           {order.status === 'completed' ? 'Selesai' :
                            order.status === 'processing' ? 'Diproses' : 'Pending'}
@@ -308,7 +308,7 @@ export default function FarmerDashboard() {
                     <h3 className="font-semibold text-black">Harga Pasar Hari Ini</h3>
                     <button 
                       onClick={() => router.push('/marketplace')}
-                      className="text-sm text-green-600 font-medium hover:underline"
+                      className="text-sm text-black font-medium hover:underline"
                     >
                       Lihat Semua →
                     </button>
@@ -317,12 +317,12 @@ export default function FarmerDashboard() {
                     <div className="p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-black">Bawang Merah</p>
                       <p className="font-bold text-black">Rp 25,000/kg</p>
-                      <p className="text-xs text-green-600">+5% dari kemarin</p>
+                      <p className="text-xs text-black">+5% dari kemarin</p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-lg">
                       <p className="text-sm text-black">Cabai Rawit</p>
                       <p className="font-bold text-black">Rp 45,000/kg</p>
-                      <p className="text-xs text-red-600">-2% dari kemarin</p>
+                      <p className="text-xs text-black">-2% dari kemarin</p>
                     </div>
                   </div>
                 </div>
@@ -399,7 +399,7 @@ export default function FarmerDashboard() {
                     <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <Package size={24} className="text-gray-400" />
+                          <Package size={24} className="text-black" />
                         </div>
                         <div>
                           <h4 className="font-medium text-black">{product.name}</h4>
@@ -408,7 +408,7 @@ export default function FarmerDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-black">Rp {product.price.toLocaleString()}</p>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}>
                           {product.status === 'active' ? 'Aktif' : 'Nonaktif'}
                         </span>
                       </div>
@@ -437,9 +437,9 @@ export default function FarmerDashboard() {
                           <p className="text-sm text-black">ID: {order.id} • Pembeli: {order.buyer}</p>
                         </div>
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                          order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
+                          order.status === 'completed' ? 'bg-green-100 text-black' :
+                          order.status === 'processing' ? 'bg-blue-100 text-black' :
+                          'bg-yellow-100 text-black'
                         }`}>
                           {order.status === 'completed' ? 'Selesai' :
                            order.status === 'processing' ? 'Diproses' : 'Pending'}
@@ -498,19 +498,19 @@ export default function FarmerDashboard() {
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t md:hidden">
         <div className="flex justify-around py-2">
           <button onClick={() => setActiveTab('products')} className="flex flex-col items-center p-2">
-            <Package size={20} className="text-green-600" />
+            <Package size={20} className="text-black" />
             <span className="text-xs text-black mt-1">Jual Produk</span>
           </button>
           <button onClick={() => router.push('/marketplace')} className="flex flex-col items-center p-2">
-            <TrendingUp size={20} className="text-green-600" />
+            <TrendingUp size={20} className="text-black" />
             <span className="text-xs text-black mt-1">Lihat Pasar</span>
           </button>
           <button onClick={() => setActiveTab('orders')} className="flex flex-col items-center p-2">
-            <ShoppingCart size={20} className="text-green-600" />
+            <ShoppingCart size={20} className="text-black" />
             <span className="text-xs text-black mt-1">Pesanan Saya</span>
           </button>
           <button onClick={() => router.push('/notifications')} className="flex flex-col items-center p-2">
-            <Bell size={20} className="text-green-600" />
+            <Bell size={20} className="text-black" />
             <span className="text-xs text-black mt-1">Pemberitahuan</span>
           </button>
         </div>

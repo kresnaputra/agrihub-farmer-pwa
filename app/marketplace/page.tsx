@@ -162,20 +162,20 @@ export default function MarketplacePage() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'all' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}
             >
               Semua
             </button>
             <button
               onClick={() => setFilter('rising')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'rising' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-black'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'rising' ? 'bg-green-100 text-black' : 'bg-gray-100 text-black'}`}
             >
               <TrendingUp size={12} className="inline mr-1" />
               Naik
             </button>
             <button
               onClick={() => setFilter('falling')}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'falling' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-black'}`}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium ${filter === 'falling' ? 'bg-red-100 text-black' : 'bg-gray-100 text-black'}`}
             >
               <TrendingDown size={12} className="inline mr-1" />
               Turun
@@ -230,7 +230,7 @@ export default function MarketplacePage() {
                       </div>
                     </td>
                     <td className="p-3">
-                      <div className={`flex items-center gap-1 font-medium ${commodity.change > 0 ? 'text-green-600' : commodity.change < 0 ? 'text-red-600' : 'text-black'}`}>
+                      <div className={`flex items-center gap-1 font-medium ${commodity.change > 0 ? 'text-black' : commodity.change < 0 ? 'text-black' : 'text-black'}`}>
                         {commodity.change > 0 ? <TrendingUp size={12} /> : 
                          commodity.change < 0 ? <TrendingDown size={12} /> : 
                          <Minus size={12} />}
@@ -248,7 +248,7 @@ export default function MarketplacePage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => setSelectedCommodity(commodity)}
-                          className="text-blue-600 hover:text-blue-800 text-sm"
+                          className="text-black hover:text-black text-sm"
                         >
                           Detail
                         </button>
@@ -293,7 +293,7 @@ export default function MarketplacePage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-black">Perubahan</p>
-                    <p className={`font-medium ${selectedCommodity.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <p className={`font-medium ${selectedCommodity.change > 0 ? 'text-black' : 'text-black'}`}>
                       {selectedCommodity.change > 0 ? '+' : ''}Rp {Math.abs(selectedCommodity.change).toLocaleString()} ({selectedCommodity.changePercent}%)
                     </p>
                   </div>
@@ -329,7 +329,7 @@ export default function MarketplacePage() {
                 <button className="flex-1 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700">
                   Set Harga Jual
                 </button>
-                <button className="flex-1 py-2 border border-green-600 text-green-600 rounded-lg font-medium hover:bg-green-50">
+                <button className="flex-1 py-2 border border-green-600 text-black rounded-lg font-medium hover:bg-green-50">
                   Tambah Alert
                 </button>
               </div>
@@ -339,7 +339,7 @@ export default function MarketplacePage() {
 
         {/* Info */}
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <h4 className="font-medium text-blue-800 mb-2 flex items-center gap-2">
+          <h4 className="font-medium text-black mb-2 flex items-center gap-2">
             <Info size={16} />
             Informasi Penting
           </h4>

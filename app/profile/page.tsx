@@ -99,7 +99,7 @@ export default function ProfilePage() {
           </div>
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="px-3 py-1 text-sm font-medium text-green-600 hover:text-green-700"
+            className="px-3 py-1 text-sm font-medium text-black hover:text-green-700"
           >
             {isEditing ? 'Batal' : 'Edit'}
           </button>
@@ -115,7 +115,7 @@ export default function ProfilePage() {
                 {photoPreview ? (
                   <img src={photoPreview} alt="Profile" className="w-full h-full rounded-full object-cover" />
                 ) : (
-                  <User size={48} className="text-green-600" />
+                  <User size={48} className="text-black" />
                 )}
               </div>
               {isEditing && (
@@ -136,7 +136,7 @@ export default function ProfilePage() {
               {profile.phone}
             </p>
             <div className="mt-2">
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm">
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-black text-sm">
                 <Shield size={12} />
                 Petani Terverifikasi
               </span>
