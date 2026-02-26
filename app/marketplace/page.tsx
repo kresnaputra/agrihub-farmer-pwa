@@ -13,6 +13,7 @@ interface Product {
   unit: string;
   image_url?: string;
   description?: string;
+  user_id?: string;
   seller?: {
     name: string;
     phone: string;
@@ -47,7 +48,7 @@ export default function BuyerPortal() {
         .from('products')
         .select(`
           *,
-          seller:seller_id(name, phone, village, city)
+          seller:profiles(name, phone, village, city)
         `)
         .eq('status', 'active')
         .gt('stock', 0)
@@ -76,7 +77,7 @@ export default function BuyerPortal() {
         .insert([
           {
             product_id: selectedProduct.id,
-            seller_id: selectedProduct.seller_id,
+            seller_id: selectedProduct.user_id,
             buyer_name: buyerName,
             buyer_phone: buyerPhone,
             quantity: orderQuantity,
