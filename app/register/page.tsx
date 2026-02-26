@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/AuthContext';
-import { User, Mail, Lock, Phone, ArrowRight, Loader2 } from 'lucide-react';
+import { User, Lock, Phone, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -12,7 +12,6 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
   
   const { register } = useAuth();
   const router = useRouter();
@@ -32,15 +31,14 @@ export default function RegisterPage() {
     setIsLoading(false);
 
     if (success) {
-      setIsSuccess(true);
+      // Redirect ke login setelah register sukses
+      router.push('/login?registered=true');
     } else {
       setError('Gagal mendaftar. Email mungkin sudah terdaftar.');
     }
   };
 
-  const goToLogin = () => {
-    router.push('/login');
-  };
+
 
   return (
     <div className="min-h-screen bg-green-50 flex flex-col justify-center px-4 py-8">
@@ -53,28 +51,8 @@ export default function RegisterPage() {
         <p className="text-black">Bergabung dengan AgriHub sekarang</p>
       </div>
 
-      {/* Form or Success Message */}
+      {/* Form */}
       <div className="bg-white rounded-xl shadow-sm p-6 max-w-sm mx-auto w-full">
-        {isSuccess ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Mail className="text-green-600" size={32} />
-            </div>
-            <h2 className="text-xl font-bold text-black mb-2">Pendaftaran Berhasil!</h2>
-            <p className="text-black mb-4">
-              Kami telah mengirimkan email verifikasi ke <strong>{email}</strong>
-            </p>
-            <p className="text-sm text-black mb-6">
-              Silakan cek inbox atau folder spam, lalu klik link verifikasi untuk mengaktifkan akun Anda.
-            </p>
-            <button
-              onClick={goToLogin}
-              className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700"
-            >
-              Lanjut ke Login
-            </button>
-          </div>
-        ) : (
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-black mb-2">
@@ -178,7 +156,6 @@ export default function RegisterPage() {
             </a>
           </p>
         </div>
-        )}
       </div>
     </div>
   );
