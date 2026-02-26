@@ -1,66 +1,69 @@
-# Setup Supabase untuk AgriHub
+# Supabase Setup untuk AgriHub (SUDAH SIAP!)
 
-## 🚀 Quick Setup (5 Menit)
+## ✅ Status: Config Sudah Siap
 
-### 1. Buat Project Supabase
-1. Buka https://supabase.com
-2. Sign up dengan email kamu
-3. Click **"New Project"**
-4. Isi detail:
-   - **Name:** `agrihub-petani`
-   - **Database Password:** `D3@dp00l`
-   - **Region:** Singapore (Southeast Asia)
-5. Click **"Create Project"**
-6. Tunggu 1-2 menit sampai project ready
-
-### 2. Ambil API Keys
-Setelah project ready:
-1. Dashboard → Project Settings (icon gear)
-2. Tab **"API"**
-3. Copy:
-   - `URL` (contoh: https://xxxxx.supabase.co)
-   - `anon public` API key
-
-### 3. Setup Environment Variables
-Buat file `.env.local` di root project:
-```
-NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxxxx
-```
-
-### 4. Run Database Schema
-1. Dashboard → **SQL Editor** (sidebar)
-2. Click **"New Query"**
-3. Copy paste isi file `supabase/schema.sql`
-4. Click **"Run"**
-
-### 5. Aktifkan Phone Auth
-1. Dashboard → **Authentication** (sidebar)
-2. Tab **"Providers"**
-3. Find **"Phone"** → Click Enable ✅
-4. Provider pilih **"Twilio"** atau **"MessageBird"**
-5. Untuk testing, bisa pakai "Test OTP" tanpa Twilio
-
-### 6. Install Supabase di Project
-```bash
-cd frontend-farmer
-npm install @supabase/supabase-js
-```
-
-### 7. Selesai! 🎉
-Project sudah siap pakai Supabase!
+Supabase URL: `https://lfysdeelrqzvlmpqyfyx.supabase.co`
 
 ---
 
-## 📱 Test Phone Auth
+## 🚀 Langkah Terakhir (2 Menit):
 
-Gunakan nomor: `+6282247809247`
-OTP Test: `123456` (kalau mode test)
+### 1. Buat File .env.local
+Di folder `frontend-farmer`, buat file `.env.local` dengan isi:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://lfysdeelrqzvlmpqyfyx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_AhFz0WqHg2V5YzDNHIezAg_h_v5yDQ-
+```
+
+### 2. Run SQL Schema
+1. Buka https://supabase.com/dashboard
+2. Pilih project `agrihub-petani`
+3. Sidebar → **SQL Editor**
+4. Click **"New Query"**
+5. Copy paste isi file `supabase/schema.sql` (dari repository)
+6. Click **"Run"**
+
+### 3. Aktifkan Phone Auth
+1. Sidebar → **Authentication**
+2. Tab **Providers**
+3. Cari **"Phone"** → Toggle **Enable** ✅
+4. **Optional**: Untuk production, setup Twilio. Untuk testing, cukup enable saja.
+
+### 4. Selesai! 🎉
 
 ---
 
-## 🔗 Resources
+## 📱 Test Login
 
-- Supabase Docs: https://supabase.com/docs
-- Phone Auth: https://supabase.com/docs/guides/auth/phone-login
-- JavaScript Client: https://supabase.com/docs/reference/javascript/installing
+**Nomor:** `+6282247809247`
+
+**Mode Testing:**
+- Kalau Phone Auth di-set ke "Test OTP", OTP-nya bisa bebas (contoh: `123456`)
+- Kalau pakai Twilio, OTP akan dikirim ke WhatsApp/SMS
+
+---
+
+## 🔐 Security Note
+
+File `.env.local` tidak akan di-push ke GitHub (sudah di .gitignore). Ini aman untuk menyimpan API keys.
+
+---
+
+## 🆘 Troubleshooting
+
+**Error: "Invalid API key"**
+→ Cek apakah `.env.local` sudah dibuat dengan benar
+
+**Error: "Database not found"**
+→ Pastikan SQL schema sudah di-run di SQL Editor
+
+**OTP tidak terkirim**
+→ Cek apakah Phone Auth sudah di-enable di dashboard
+
+---
+
+## 📚 Dokumentasi
+
+- [Supabase Auth Docs](https://supabase.com/docs/guides/auth/phone-login)
+- [Supabase JavaScript Client](https://supabase.com/docs/reference/javascript/installing)
