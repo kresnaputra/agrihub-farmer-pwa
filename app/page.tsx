@@ -458,7 +458,7 @@ export default function Marketplace() {
             <p className="text-gray-500 text-sm">Coba kata kunci atau kategori lain</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {filteredProducts.map((product) => {
               const discount = getDiscount(product.id);
               const originalPrice = Math.round(product.price * 100 / (100 - discount));
