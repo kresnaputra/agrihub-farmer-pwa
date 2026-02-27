@@ -37,8 +37,27 @@ export default function Marketplace() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   
-  const { supabase } = useAuth();
+  const { supabase, user, isLoading } = useAuth();
   const router = useRouter();
+
+  // Redirect farmers to dashboard
+  useEffect(() => {
+    if (!isLoading && user) {
+      checkUserRole();
+    }
+  }, [isLoading, user, supabase, router]);
+
+  const checkUserRole = async () => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user?.id)
+      .single();
+    
+    if (profile?.role === 'farmer' || profile?.role === 'admin') {
+      router.push('/dashboard');
+    }
+  };
 
   useEffect(() => {
     fetchProducts();

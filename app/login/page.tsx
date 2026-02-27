@@ -47,14 +47,20 @@ export default function LoginPage() {
         }
 
         console.log('Login success, role:', profile.role);
+        console.log('Full profile:', profile);
 
-        // Redirect based on role
-        if (profile?.role === 'admin') {
+        // Redirect based on role from database (not from UI selection)
+        const userRole = profile.role?.toLowerCase();
+        
+        if (userRole === 'admin') {
+          console.log('Redirecting to /admin');
           router.push('/admin');
-        } else if (profile?.role === 'farmer') {
+        } else if (userRole === 'farmer') {
+          console.log('Redirecting to /dashboard');
           router.push('/dashboard');
         } else {
-          router.push('/'); // Buyer goes to marketplace
+          console.log('Redirecting to / (buyer marketplace)');
+          router.push('/');
         }
       } catch (err) {
         console.error('Redirect error:', err);
