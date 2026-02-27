@@ -26,20 +26,39 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (result.success && result.user) {
-      // Check user role from profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', result.user.id)
-        .single();
+      try {
+        // Check user role from profile
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', result.user.id)
+          .single();
 
-      // Redirect based on role
-      if (profile?.role === 'admin') {
-        router.push('/admin');
-      } else if (role === 'farmer') {
-        router.push('/dashboard');
-      } else {
-        router.push('/'); // Buyer goes to marketplace
+        if (profileError) {
+          console.error('Profile fetch error:', profileError);
+          setError('Gagal mengambil data profil. Silakan coba lagi.');
+          return;
+        }
+
+        if (!profile) {
+          console.error('Profile not found for user:', result.user.id);
+          setError('Profil tidak ditemukan. Silakan daftar ulang.');
+          return;
+        }
+
+        console.log('Login success, role:', profile.role);
+
+        // Redirect based on role
+        if (profile?.role === 'admin') {
+          router.push('/admin');
+        } else if (profile?.role === 'farmer') {
+          router.push('/dashboard');
+        } else {
+          router.push('/'); // Buyer goes to marketplace
+        }
+      } catch (err) {
+        console.error('Redirect error:', err);
+        setError('Terjadi kesalahan. Silakan coba lagi.');
       }
     } else {
       setError('Email atau password salah');
