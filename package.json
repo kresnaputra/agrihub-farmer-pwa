@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "node build.js",
-    "start": "next start"
+    "start": "next start",
+    "migrate": "node scripts/run-migrations.js",
+    "migrate:setup": "echo 'Run 000_setup_migration_tracking.sql di Supabase SQL Editor terlebih dahulu'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0",
