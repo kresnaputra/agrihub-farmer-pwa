@@ -37,15 +37,15 @@ export default function Marketplace() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   
-  const { supabase, user, isLoading } = useAuth();
+  const { supabase, user, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   // Redirect farmers to dashboard
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!authLoading && user) {
       checkUserRole();
     }
-  }, [isLoading, user, supabase, router]);
+  }, [authLoading, user]);
 
   const checkUserRole = async () => {
     const { data: profile } = await supabase
